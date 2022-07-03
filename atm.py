@@ -50,12 +50,8 @@ def delete(oid):
     #close connection
     conn.close()
 
-
 def create_acct_win():
     global createwin
-    global name
-    global pin
-    global balance
 
     createwin = Tk()
     createwin.title('Create Account')
@@ -79,18 +75,18 @@ def create_acct_win():
     balance = Entry(createwin, width= 30)
     balance.grid(row=2, column=1)
 
-    acct_create = Button(createwin, text='Create Now', command=create_acct)
+    acct_create = Button(createwin, text='Create Now', command=lambda: create_acct(name.get(), pin.get(), balance.get()))
     acct_create.grid(row=3, column=0, columnspan=2, padx=10, pady=(15,0), ipadx=146)
 
-def create_acct():
+def create_acct(name, pin, balance):
     
     conn = sqlite3.connect('Bank_Accounts.db')
     c = conn.cursor()
     c.execute('INSERT INTO Accounts VALUES(:Name, :Pin, :Balance)',
     {
-        'Name': name.get(),
-        'Pin': pin.get(),
-        'Balance': float(balance.get())
+        'Name': name,
+        'Pin': pin,
+        'Balance': float(balance)
     }
     )
     accounts = query_all()
@@ -106,8 +102,6 @@ def create_acct():
 
 def login_win():
     global loginwin
-    global enter_pin
-    global a_num
     
     loginwin = Tk()
     loginwin.title('Login Account')
@@ -126,42 +120,43 @@ def login_win():
     enter_pin = Entry(loginwin, width= 30)
     enter_pin.grid(row=2, column=1, padx=20, pady=(10, 0))
 
-    login_acct = Button(loginwin, text='Login', command=login)
+    login_acct = Button(loginwin, text='Login', command=lambda: login(a_num.get(), enter_pin.get()))
     login_acct.grid(row=3, column=0, columnspan=2, padx=10, pady=(15,0), ipadx=146)
 
-def login():
+def login(acct_num, pin):
     global TRIES 
     global account
 
     conn = sqlite3.connect('Bank_Accounts.db')
     c = conn.cursor()
     
-    acct_num = a_num.get()
     c.execute('SELECT *, oid from Accounts WHERE oid='+acct_num)
     account = c.fetchall()
 
-    while TRIES < 3:
-        pin_value = int(enter_pin.get())
-        if pin_value in account[0]:
-            messagebox.showinfo('information', f'Pin Correct \n Welcome {account[0][0]}')
-            main_win()
-            break
-        else:
-            messagebox.showerror('error', f'Pin Incorrect \n {3-TRIES} more trie(s)')
-            TRIES = TRIES + 1
-            loginwin.destroy()
-            login_win()
+    pin_value = int(pin)
     if TRIES >= 3:
         messagebox.showerror('error', f'Tries Limit Reached !!')
         loginwin.destroy()
+        return
+    
+    if pin_value in account[0]:
+        messagebox.showinfo('information', f'Pin Correct \n Welcome {account[0][0]}')
+        main_win(pin)
+        
+    else:
+        messagebox.showerror('error', f'Pin Incorrect \n {3-TRIES} more trie(s)')
+        print(TRIES, "try: ", pin_value)
+        TRIES = TRIES + 1
+        loginwin.destroy()
+        login_win()
+    
 
-def main_win():
+def main_win(pin_value):
     global mainwin
     global check_bal
     global withdraw
     global deposit
     global transfer
-    global pin_value
 
     mainwin = Tk()
     mainwin.title('Welcome')
@@ -169,8 +164,6 @@ def main_win():
 
     conn = sqlite3.connect('Bank_Accounts.db')
     c = conn.cursor()
-
-    pin_value = enter_pin.get()
 
     c.execute('SELECT *, oid FROM Accounts WHERE pin = '+ pin_value)
     records = c.fetchall()
@@ -184,7 +177,7 @@ def main_win():
     deposit = Button(mainwin, text='Deposit', command=deposit_win)
     deposit.grid(row=3, column=0, columnspan=2, padx=10, pady=(15,0), ipadx=146)
     
-    transfer = Button(mainwin, text='Transfer', command=Transfer)
+    transfer = Button(mainwin, text='Transfer', command=transfer_win)
     transfer.grid(row=4, column=0, columnspan=2, padx=10, pady=(15,0), ipadx=146)
 
     loginwin.destroy()
@@ -204,8 +197,7 @@ def check_balance():
 
 def withdrawal_win():
     global withdrawalwin
-    global w_amount
-    global w_pin
+
     withdrawalwin = Tk()
     withdrawalwin.geometry('400x400')
     withdrawalwin.title('Withdraw')
@@ -227,13 +219,10 @@ def withdrawal_win():
     w_pin = Entry(withdrawalwin, width= 30)
     w_pin.grid(row=3, column=1, padx=20, pady=(10, 0))
 
-    w_sub = Button(withdrawalwin, text='Withdraw', command=Withdrawal)
+    w_sub = Button(withdrawalwin, text='Withdraw', command=lambda: Withdrawal(int(w_amount.get()), int(w_pin.get())))
     w_sub.grid(row=4, column=0, columnspan=2, padx=10, pady=(15,0), ipadx=146)
 
-def Withdrawal():
-    amount = int(w_amount.get())
-    wd_pin = int(w_pin.get())
-
+def Withdrawal(amount, wd_pin):
     if wd_pin in account[0]:
         if amount > account[0][-2]:
             withdrawalwin.destroy()
@@ -258,13 +247,12 @@ def Withdrawal():
             messagebox.showinfo('information', f'Transaction Successful')
 
     else:
-         withdrawalwin.destroy()
-         messagebox.showerror('error', f'Pin Incorrect')
+        withdrawalwin.destroy()
+        messagebox.showerror('error', f'Pin Incorrect')
 
 def deposit_win():
     global depositwin
-    global d_amount
-    global d_pin
+
     depositwin = Tk()
     depositwin.geometry('400x400')
     depositwin.title('Deposit')
@@ -286,15 +274,10 @@ def deposit_win():
     d_pin = Entry(depositwin, width= 30)
     d_pin.grid(row=3, column=1, padx=20, pady=(10, 0))
 
-    d_sub = Button(depositwin, text='Deposit', command=Deposit)
+    d_sub = Button(depositwin, text='Deposit', command=lambda: Deposit(int(d_amount.get()), int(d_pin.get())))
     d_sub.grid(row=4, column=0, columnspan=2, padx=10, pady=(15,0), ipadx=146)
 
-
-
-def Deposit():
-    amount = int(d_amount.get())
-    dp_pin = int(d_pin.get())
-
+def Deposit(amount, dp_pin):
     if dp_pin in account[0]:
             new_bal = account[0][-2] + amount
             conn = sqlite3.connect('Bank_Accounts.db')
@@ -314,27 +297,82 @@ def Deposit():
             depositwin.destroy()
             messagebox.showinfo('information', f'Transaction Successful')
 
-    else:
-         depositwin.destroy()
-         messagebox.showerror('error', f'Pin Incorrect')
+    else:    
+        depositwin.destroy()
+        messagebox.showerror('error', f'Pin Incorrect')
+
+def transfer_win():
+    global transferwin
+
+    transferwin = Tk()
+    transferwin.geometry('400x500')
+    transferwin.title('Transfer')
+
+    balance = account[0][-2]
+
+    acct_bal = Label(transferwin, text=f'Account Balance: {balance}')
+    acct_bal.grid(row=0, column=0)
+
+    bene_acct_lb = Label(transferwin, text='Enter Beneficiary Account: ')
+    bene_acct_lb.grid(row=1, column=0)
+
+    bene_acct = Entry(transferwin, width=30)
+    bene_acct.grid(row=2, column=0)
+
+    amount_lb = Label(transferwin, text='Enter Amount to Transfer: ')
+    amount_lb.grid(row=3, column=0)
+
+    t_amount = Entry(transferwin, width= 30)
+    t_amount.grid(row=4, column=0, padx=20, pady=(10, 0))
+
+    pin_lb = Label(transferwin, text='Enter Pin: ')
+    pin_lb.grid(row=5, column=0)
+
+    t_pin = Entry(transferwin, width= 30)
+    t_pin.grid(row=5, column=1, padx=20, pady=(10, 0))
+
+    t_sub = Button(transferwin, text='Transfer', command=lambda: Transfer(bene_acct.get(), t_amount.get(), t_pin.get()))
+    t_sub.grid(row=6, column=0, columnspan=2, padx=10, pady=(15,0), ipadx=146)
 
 
-
-
-
-
-
-def Transfer(pin, amount, account_number):
+def Transfer(account_number, amount, t_pin):
     conn = sqlite3.connect('Bank_Accounts.db')
     c = conn.cursor()
 
     c.execute('SELECT * FROM Accounts where oid = ' + account_number)
-    record = c.fetchall()
-    ben_pin = str(record[0][1])
+    bene_account = c.fetchall()
 
-    Withdrawal(pin, amount)
-    Deposit(ben_pin, amount)
+    if int(t_pin) == account[0][1]:
+        if float(amount) > account[0][2]:
+            messagebox.showerror('error', f'Insufficient Balance')
+        else:
+            conn = sqlite3.connect('Bank_Accounts.db')
+            c = conn.cursor()
+            c.execute('''
+                        UPDATE Accounts SET
+                        Balance = :Balance
+                        WHERE oid = :oid
+                    ''',
+                    {
+                            'Balance': account[0][2] - float(amount),
+                            'oid': account[0][-1]
+                    })
 
+            c.execute('''
+                        UPDATE Accounts SET
+                        Balance = :Balance
+                        WHERE oid = :oid
+                    ''',
+                    {
+                            'Balance': bene_account[0][2] + float(amount),
+                            'oid': account_number
+                    })
+
+            messagebox.showinfo('information', f'Transaction Successful')
+    else:
+        messagebox.showerror('error', f'Pin Incorrect')
+    
+    transferwin.destroy()
     #commit changes
     conn.commit()
     #close connection
@@ -350,6 +388,8 @@ create_acct_btn.grid(row=0, column=0, columnspan=2, padx=10, pady=5, ipadx=139)
 
 login_btn = Button(root, text='Input Card (Account No.)', command=login_win)
 login_btn.grid(row=1, column=0, columnspan=2, padx=10, pady=5, ipadx=139)
+
+
 #commit changes
 conn.commit()
 #close connection
