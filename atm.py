@@ -153,10 +153,6 @@ def login(acct_num, pin):
 
 def main_win(pin_value):
     global mainwin
-    global check_bal
-    global withdraw
-    global deposit
-    global transfer
 
     mainwin = Tk()
     mainwin.title('Welcome')
