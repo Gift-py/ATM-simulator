@@ -1,0 +1,4 @@
+documentation
+gui design
+error handling 
+comments

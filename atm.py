@@ -6,7 +6,6 @@ root = Tk()
 root.title('ATM SIMULATOR')
 root.geometry('450x400')
 
-
 TRIES = 0
 
 #create db
@@ -15,7 +14,6 @@ conn = sqlite3.connect('Bank_Accounts.db')
 c = conn.cursor()
 
 #create table in db
-
 # c.execute('''CREATE TABLE Accounts(
 #                Name text,
 #                Pin integer,
@@ -93,9 +91,7 @@ def create_acct(name, pin, balance):
     createwin.destroy()
     messagebox.showinfo('information', f'Account created Successfully! \n Account Number is: {accounts[-1][-1] + 1}')
 
-    #commit changes
     conn.commit()
-    #close connection
     conn.close()
 
     print('Account Created Succesfully')
