@@ -292,7 +292,6 @@ def Deposit(amount, dp_pin):
             conn.close()
             depositwin.destroy()
             messagebox.showinfo('information', f'Transaction Successful')
-
     else:    
         depositwin.destroy()
         messagebox.showerror('error', f'Pin Incorrect')
