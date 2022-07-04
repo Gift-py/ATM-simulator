@@ -2,3 +2,5 @@ documentation
 gui design
 error handling 
 comments
+system optimization
+display updated balance
