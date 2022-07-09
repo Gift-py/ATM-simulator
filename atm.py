@@ -5,6 +5,21 @@ from atm_utils import *
 
 TRIES = 0
 
+def start_win():
+    global root
+    root = Tk()
+    root.title('ATM SIMULATOR')
+    root.geometry('450x400')
+    f_name_lb = Label(root, text='Hidden Leaf Bank 🗽')
+    f_name_lb.grid(row=0, column=0, pady=(10, 0))
+
+    create_acct_btn = Button(root, text='Create Account', command=create_acct_win)
+    create_acct_btn.grid(row=0, column=0, columnspan=2, padx=10, pady=5, ipadx=139)
+
+    login_btn = Button(root, text='Input Card (Account No.)', command=login_win)
+    login_btn.grid(row=1, column=0, columnspan=2, padx=10, pady=5, ipadx=139)
+
+    Button(root, text='Quit', command=lambda: root.destroy()).grid(row=2, column=0)
 
 def create_acct_win():
     global createwin
@@ -115,17 +130,10 @@ def login(acct_number, pin):
 
 def main_win(pin_value):
     global mainwin
-    #global account
 
     mainwin = Tk()
     mainwin.title('Welcome')
     mainwin.geometry('400x400')
-
-    conn = sqlite3.connect('Bank_Accounts.db')
-    c = conn.cursor()
-
-    c.execute('SELECT *, oid FROM Accounts WHERE pin = '+ pin_value)
-    records = c.fetchall()
 
     check_bal = Button(mainwin, text='Check Balance', command=check_balance)
     check_bal.grid(row=1, column=0, columnspan=2, padx=10, pady=(15,0), ipadx=146)
@@ -148,8 +156,10 @@ def check_balance():
     balwin = Tk()
     balwin.title('Account Balance')
     balwin.geometry('400x200')
+    
     account = query(acct_num)
     balance = account[0][-2]
+
     name = Label(balwin, text=f'Hello {account[0][0]}')
     name.grid(row=0, column=0)
     
@@ -158,10 +168,10 @@ def check_balance():
 
 def withdrawal_win():
     global withdrawalwin
-
     withdrawalwin = Tk()
     withdrawalwin.geometry('400x400')
     withdrawalwin.title('Withdraw')
+
     account = query(acct_num)
     balance = account[0][-2]
 
@@ -267,10 +277,10 @@ def Deposit(amount, dp_pin):
 
 def transfer_win():
     global transferwin
-
     transferwin = Tk()
     transferwin.geometry('400x500')
     transferwin.title('Transfer')
+
     account = query(acct_num)
     balance = account[0][-2]
 
@@ -346,22 +356,4 @@ def Transfer(account_number, amount, t_pin):
 
 print(query_all())
 
-def start_win():
-    global root
-    root = Tk()
-    root.title('ATM SIMULATOR')
-    root.geometry('450x400')
-    f_name_lb = Label(root, text='Hidden Leaf Bank 🗽')
-    f_name_lb.grid(row=0, column=0, pady=(10, 0))
-
-    create_acct_btn = Button(root, text='Create Account', command=create_acct_win)
-    create_acct_btn.grid(row=0, column=0, columnspan=2, padx=10, pady=5, ipadx=139)
-
-    login_btn = Button(root, text='Input Card (Account No.)', command=login_win)
-    login_btn.grid(row=1, column=0, columnspan=2, padx=10, pady=5, ipadx=139)
-
-    Button(root, text='Quit', command=lambda: root.destroy()).grid(row=2, column=0)
-
 start_win()
-
-mainloop()
