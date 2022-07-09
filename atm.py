@@ -35,6 +35,20 @@ def query_all():
     conn.close()
     return records
 
+def query(oid):
+    conn = sqlite3.connect('Bank_Accounts.db')
+    #create cursor
+    c = conn.cursor()
+
+    c.execute('SELECT *, oid FROM Accounts WHERE oid='+oid)
+    records = c.fetchall()
+
+    #commit changes
+    conn.commit()
+    #close connection
+    conn.close()
+    return records
+
 def delete(oid):
     #create db or conect to one
     conn = sqlite3.connect('Bank_Accounts.db')
@@ -119,10 +133,11 @@ def login_win():
     login_acct = Button(loginwin, text='Login', command=lambda: login(a_num.get(), enter_pin.get()))
     login_acct.grid(row=3, column=0, columnspan=2, padx=10, pady=(15,0), ipadx=146)
 
-def login(acct_num, pin):
+def login(acct_number, pin):
     global TRIES 
-    global account
+    global acct_num
 
+    acct_num = acct_number
     conn = sqlite3.connect('Bank_Accounts.db')
     c = conn.cursor()
     
@@ -146,9 +161,12 @@ def login(acct_num, pin):
         loginwin.destroy()
         login_win()
     
+    account = query(acct_num)
+    
 
 def main_win(pin_value):
     global mainwin
+    #global account
 
     mainwin = Tk()
     mainwin.title('Welcome')
@@ -179,7 +197,7 @@ def check_balance():
     balwin = Tk()
     balwin.title('Account Balance')
     balwin.geometry('400x200')
-
+    account = query(acct_num)
     balance = account[0][-2]
     name = Label(balwin, text=f'Hello {account[0][0]}')
     name.grid(row=0, column=0)
@@ -193,7 +211,7 @@ def withdrawal_win():
     withdrawalwin = Tk()
     withdrawalwin.geometry('400x400')
     withdrawalwin.title('Withdraw')
-
+    account = query(acct_num)
     balance = account[0][-2]
 
     acct_bal = Label(withdrawalwin, text=f'Account Balance: {balance}')
@@ -215,11 +233,13 @@ def withdrawal_win():
     w_sub.grid(row=4, column=0, columnspan=2, padx=10, pady=(15,0), ipadx=146)
 
 def Withdrawal(amount, wd_pin):
+    account = query(acct_num)
     if wd_pin in account[0]:
         if amount > account[0][-2]:
             withdrawalwin.destroy()
             messagebox.showerror('error', f'Insufficient Balance')
         else:
+            account = query(acct_num)
             new_bal = account[0][-2] - amount
             conn = sqlite3.connect('Bank_Accounts.db')
             c = conn.cursor()
@@ -248,7 +268,7 @@ def deposit_win():
     depositwin = Tk()
     depositwin.geometry('400x400')
     depositwin.title('Deposit')
-
+    account = query(acct_num)
     balance = account[0][-2]
 
     acct_bal = Label(depositwin, text=f'Account Balance: {balance}')
@@ -270,7 +290,9 @@ def deposit_win():
     d_sub.grid(row=4, column=0, columnspan=2, padx=10, pady=(15,0), ipadx=146)
 
 def Deposit(amount, dp_pin):
+    account = query(acct_num)
     if dp_pin in account[0]:
+            account = query(acct_num)
             new_bal = account[0][-2] + amount
             conn = sqlite3.connect('Bank_Accounts.db')
             c = conn.cursor()
@@ -298,7 +320,7 @@ def transfer_win():
     transferwin = Tk()
     transferwin.geometry('400x500')
     transferwin.title('Transfer')
-
+    account = query(acct_num)
     balance = account[0][-2]
 
     acct_bal = Label(transferwin, text=f'Account Balance: {balance}')
@@ -327,10 +349,12 @@ def transfer_win():
 
 
 def Transfer(account_number, amount, t_pin):
+    account = query(acct_num)
     conn = sqlite3.connect('Bank_Accounts.db')
     c = conn.cursor()
 
     c.execute('SELECT * FROM Accounts where oid = ' + account_number)
+    account = query(acct_num)
     bene_account = c.fetchall()
 
     if int(t_pin) == account[0][1]:
