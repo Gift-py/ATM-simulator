@@ -1,66 +1,10 @@
 import sqlite3
 from tkinter import *
 from tkinter import messagebox
-
-root = Tk()
-root.title('ATM SIMULATOR')
-root.geometry('450x400')
+from atm_utils import *
 
 TRIES = 0
 
-#create db
-conn = sqlite3.connect('Bank_Accounts.db')
-#create cursor
-c = conn.cursor()
-
-#create table in db
-# c.execute('''CREATE TABLE Accounts(
-#                Name text,
-#                Pin integer,
-#                Balance Float
-#               )
-#          ''')
-
-def query_all():
-    conn = sqlite3.connect('Bank_Accounts.db')
-    #create cursor
-    c = conn.cursor()
-
-    c.execute('SELECT *, oid FROM Accounts')
-    records = c.fetchall()
-
-    #commit changes
-    conn.commit()
-    #close connection
-    conn.close()
-    return records
-
-def query(oid):
-    conn = sqlite3.connect('Bank_Accounts.db')
-    #create cursor
-    c = conn.cursor()
-
-    c.execute('SELECT *, oid FROM Accounts WHERE oid='+oid)
-    records = c.fetchall()
-
-    #commit changes
-    conn.commit()
-    #close connection
-    conn.close()
-    return records
-
-def delete(oid):
-    #create db or conect to one
-    conn = sqlite3.connect('Bank_Accounts.db')
-    #create cursor
-    c = conn.cursor()
-
-    c.execute('DELETE from Accounts')# WHERE oid= '+ int(oid))
-
-    #commit changes
-    conn.commit()
-    #close connection
-    conn.close()
 
 def create_acct_win():
     global createwin
@@ -90,8 +34,11 @@ def create_acct_win():
     acct_create = Button(createwin, text='Create Now', command=lambda: create_acct(name.get(), pin.get(), balance.get()))
     acct_create.grid(row=3, column=0, columnspan=2, padx=10, pady=(15,0), ipadx=146)
 
+    Button(root, text='Quit', command=lambda: createwin.destroy()).grid(row=4, column=0)
+
+    root.destroy()
+
 def create_acct(name, pin, balance):
-    
     conn = sqlite3.connect('Bank_Accounts.db')
     c = conn.cursor()
     c.execute('INSERT INTO Accounts VALUES(:Name, :Pin, :Balance)',
@@ -109,6 +56,8 @@ def create_acct(name, pin, balance):
     conn.close()
 
     print('Account Created Succesfully')
+
+    start_win()
 
 def login_win():
     global loginwin
@@ -189,6 +138,8 @@ def main_win(pin_value):
     
     transfer = Button(mainwin, text='Transfer', command=transfer_win)
     transfer.grid(row=4, column=0, columnspan=2, padx=10, pady=(15,0), ipadx=146)
+
+    Button(root, text='Quit', command=lambda: mainwin.destroy()).grid(row=5, column=0)
 
     loginwin.destroy()
 
@@ -395,18 +346,22 @@ def Transfer(account_number, amount, t_pin):
 
 print(query_all())
 
-f_name_lb = Label(root, text='Hidden Leaf Bank 🗽')
-f_name_lb.grid(row=0, column=0, pady=(10, 0))
+def start_win():
+    global root
+    root = Tk()
+    root.title('ATM SIMULATOR')
+    root.geometry('450x400')
+    f_name_lb = Label(root, text='Hidden Leaf Bank 🗽')
+    f_name_lb.grid(row=0, column=0, pady=(10, 0))
 
-create_acct_btn = Button(root, text='Create Account', command=create_acct_win)
-create_acct_btn.grid(row=0, column=0, columnspan=2, padx=10, pady=5, ipadx=139)
+    create_acct_btn = Button(root, text='Create Account', command=create_acct_win)
+    create_acct_btn.grid(row=0, column=0, columnspan=2, padx=10, pady=5, ipadx=139)
 
-login_btn = Button(root, text='Input Card (Account No.)', command=login_win)
-login_btn.grid(row=1, column=0, columnspan=2, padx=10, pady=5, ipadx=139)
+    login_btn = Button(root, text='Input Card (Account No.)', command=login_win)
+    login_btn.grid(row=1, column=0, columnspan=2, padx=10, pady=5, ipadx=139)
 
+    Button(root, text='Quit', command=lambda: root.destroy()).grid(row=2, column=0)
 
-#commit changes
-conn.commit()
-#close connection
-conn.close()
+start_win()
+
 mainloop()
