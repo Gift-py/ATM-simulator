@@ -10,6 +10,7 @@ def start_win():
     root = Tk()
     root.title('ATM SIMULATOR')
     root.geometry('450x400')
+
     f_name_lb = Label(root, text='Hidden Leaf Bank 🗽')
     f_name_lb.grid(row=0, column=0, pady=(10, 0))
 
@@ -23,7 +24,6 @@ def start_win():
 
 def create_acct_win():
     global createwin
-
     createwin = Tk()
     createwin.title('Create Account')
     createwin.geometry('400x300')
@@ -307,7 +307,6 @@ def transfer_win():
 
     t_sub = Button(transferwin, text='Transfer', command=lambda: Transfer(bene_acct.get(), t_amount.get(), t_pin.get()))
     t_sub.grid(row=6, column=0, columnspan=2, padx=10, pady=(15,0), ipadx=146)
-
 
 def Transfer(account_number, amount, t_pin):
     account = query(acct_num)

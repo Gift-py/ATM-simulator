@@ -1,6 +1,5 @@
 documentation
 gui design
-transfer summary
 comments
 system optimization
 
