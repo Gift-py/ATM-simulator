@@ -1,57 +1,72 @@
 import sqlite3
 from tkinter import *
 from tkinter import messagebox
+
+from pyparsing import col
 from atm_utils import *
 
 TRIES = 0
+global root
+root = Tk()
+root.title('Root Win')
+root.geometry('100x100')
+root.configure(background="#fbfaf5")
+Button(root, text='Quit', command=lambda: root.destroy()).grid(row=0, column=0)
 
 def start_win():
-    global root
-    root = Tk()
-    root.title('ATM SIMULATOR')
-    root.geometry('450x400')
+    global root2
+    root2 = Tk()
+    root2.title('KNAB EHT')
+    root2.geometry('470x400')
+    root2.configure(background="#efefef")
 
-    f_name_lb = Label(root, text='Hidden Leaf Bank 🗽')
-    f_name_lb.grid(row=0, column=0, pady=(10, 0))
+    f_name_lb = Label(root2, text='WELCOME TO KNAB EHT!', anchor='center')
+    f_name_lb.grid(row=0, column=2, pady=(10, 0), padx=5)
 
-    create_acct_btn = Button(root, text='Create Account', command=create_acct_win)
-    create_acct_btn.grid(row=0, column=0, columnspan=2, padx=10, pady=5, ipadx=139)
+    lb = LabelFrame(root2, text='Available Services')
+    lb.grid(row=1, column=0, columnspan=4, pady=(10, 0), padx=10)
 
-    login_btn = Button(root, text='Input Card (Account No.)', command=login_win)
-    login_btn.grid(row=1, column=0, columnspan=2, padx=10, pady=5, ipadx=139)
+    create_acct_btn = Button(lb, text='Create Account', command=create_acct_win)
+    create_acct_btn.grid(row=2, column=0, columnspan=3, padx=10, pady=5, ipadx=139)
 
-    Button(root, text='Quit', command=lambda: root.destroy()).grid(row=2, column=0)
+    login_btn = Button(lb, text='Input Card (Account No.)', command=login_win)
+    login_btn.grid(row=3, column=0, columnspan=3, padx=10, pady=5, ipadx=139)
+
+    Button(root2, text='Quit', command=lambda: root.destroy()).grid(row=5, column=3, pady=(10, 10))
 
 def create_acct_win():
     global createwin
     createwin = Tk()
-    createwin.title('Create Account')
-    createwin.geometry('400x300')
+    createwin.title('KNAB EHT')
+    createwin.geometry('450x350')
 
-    name_lb = Label(createwin, text='Enter Name: ')
-    name_lb.grid(row=0, column=0, pady=(10, 0))
+    fr = LabelFrame(createwin, text='Create Account')
+    fr.grid(row=0, column=0, columnspan=2, pady=10, padx=10)
 
-    pin_lb = Label(createwin, text='Enter Pin: ')
-    pin_lb.grid(row=1, column=0)
+    name_lb = Label(fr, text='Enter Name: ')
+    name_lb.grid(row=1, column=0, pady=(10, 0))
 
-    balance_lb = Label(createwin, text='Deposit: ')
-    balance_lb.grid(row=2, column=0)
+    pin_lb = Label(fr, text='Enter Pin: ')
+    pin_lb.grid(row=2, column=0)
 
-    name = Entry(createwin, width= 30)
-    name.grid(row=0, column=1, padx=20, pady=(10, 0))
+    balance_lb = Label(fr, text='Deposit: ')
+    balance_lb.grid(row=3, column=0)
 
-    pin = Entry(createwin, width= 30)
-    pin.grid(row=1, column=1)
+    name = Entry(fr, width= 30)
+    name.grid(row=1, column=1, padx=20, pady=(10, 0))
 
-    balance = Entry(createwin, width= 30)
-    balance.grid(row=2, column=1)
+    pin = Entry(fr, width= 30)
+    pin.grid(row=2, column=1)
 
-    acct_create = Button(createwin, text='Create Now', command=lambda: create_acct(name.get(), pin.get(), balance.get()))
-    acct_create.grid(row=3, column=0, columnspan=2, padx=10, pady=(15,0), ipadx=146)
+    balance = Entry(fr, width= 30)
+    balance.grid(row=3, column=1)
 
-    Button(root, text='Quit', command=lambda: createwin.destroy()).grid(row=4, column=0)
+    acct_create = Button(fr, text='Create Now', command=lambda: create_acct(name.get(), pin.get(), balance.get()))
+    acct_create.grid(row=4, column=1, padx=10, pady=(15,10), ipadx=120)
 
-    root.destroy()
+    Button(createwin, text='Quit', command=lambda: createwin.destroy()).grid(row=6, column=1, pady=15)
+
+    root2.destroy()
 
 def create_acct(name, pin, balance):
     conn = sqlite3.connect('Bank_Accounts.db')
@@ -78,11 +93,11 @@ def login_win():
     global loginwin
     
     loginwin = Tk()
-    loginwin.title('Login Account')
-    loginwin.geometry('400x200')
+    loginwin.title('KNAB EHT')
+    loginwin.geometry('350x200')
 
-    card_lb = Label(loginwin, text='Card Received !')
-    card_lb.grid(row=0, column=0)
+    card_lb = Label(loginwin, text='Card Received !', anchor='center')
+    card_lb.grid(row=0, column=0, columnspan=2)
 
     num_lb = Label(loginwin, text='Account No: ')
     num_lb.grid(row=1, column=0)
@@ -95,7 +110,7 @@ def login_win():
     enter_pin.grid(row=2, column=1, padx=20, pady=(10, 0))
 
     login_acct = Button(loginwin, text='Login', command=lambda: login(a_num.get(), enter_pin.get()))
-    login_acct.grid(row=3, column=0, columnspan=2, padx=10, pady=(15,0), ipadx=146)
+    login_acct.grid(row=3, column=0, columnspan=2, padx=10, pady=(25,0), ipadx=146)
 
 def login(acct_number, pin):
     global TRIES 
@@ -116,7 +131,7 @@ def login(acct_number, pin):
     
     if pin_value in account[0]:
         messagebox.showinfo('information', f'Pin Correct \n Welcome {account[0][0]}')
-        main_win(pin)
+        main_win()
         
     else:
         messagebox.showerror('error', f'Pin Incorrect \n {3-TRIES} more trie(s)')
@@ -128,28 +143,33 @@ def login(acct_number, pin):
     account = query(acct_num)
     
 
-def main_win(pin_value):
+def main_win():
     global mainwin
 
     mainwin = Tk()
     mainwin.title('Welcome')
-    mainwin.geometry('400x400')
+    mainwin.geometry('250x300')
 
-    check_bal = Button(mainwin, text='Check Balance', command=check_balance)
-    check_bal.grid(row=1, column=0, columnspan=2, padx=10, pady=(15,0), ipadx=146)
+    check_bal = Button(mainwin, text='Balance', command=check_balance)
+    check_bal.config(width=30)
+    check_bal.grid(row=1, column=0, padx=10, pady=(15,0))
     
     withdraw = Button(mainwin, text='Withdraw', command=withdrawal_win)
-    withdraw.grid(row=2, column=0, columnspan=2, padx=10, pady=(15,0), ipadx=146)
+    withdraw.config(width=30)
+    withdraw.grid(row=2, column=0, padx=10, pady=(15,0))
     
     deposit = Button(mainwin, text='Deposit', command=deposit_win)
-    deposit.grid(row=3, column=0, columnspan=2, padx=10, pady=(15,0), ipadx=146)
+    deposit.config(width=30)
+    deposit.grid(row=3, column=0, padx=10, pady=(15,0))
     
     transfer = Button(mainwin, text='Transfer', command=transfer_win)
-    transfer.grid(row=4, column=0, columnspan=2, padx=10, pady=(15,0), ipadx=146)
+    transfer.config(width=30)
+    transfer.grid(row=4, column=0, padx=10, pady=(15,0))
 
-    Button(root, text='Quit', command=lambda: mainwin.destroy()).grid(row=5, column=0)
+    Button(mainwin, text='Quit', command=lambda: mainwin.destroy()).grid(row=5, column=0, pady=(15, 0))
 
     loginwin.destroy()
+    root2.destroy
 
 def check_balance():
     global balwin
@@ -354,5 +374,6 @@ def Transfer(account_number, amount, t_pin):
     conn.close()
 
 print(query_all())
-
 start_win()
+mainloop()
+

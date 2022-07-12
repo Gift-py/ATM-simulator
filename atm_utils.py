@@ -1,3 +1,5 @@
+import sqlite3
+
 
 def query_all():
     conn = sqlite3.connect('Bank_Accounts.db')
@@ -12,8 +14,6 @@ def query_all():
     #close connection
     conn.close()
     return records
-
-import sqlite3
 
 def query(oid):
     conn = sqlite3.connect('Bank_Accounts.db')
