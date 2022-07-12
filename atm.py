@@ -278,26 +278,33 @@ def deposit_win():
     depositwin = Tk()
     depositwin.geometry('400x400')
     depositwin.title('Deposit')
+    
     account = query(acct_num)
     balance = account[0][-2]
 
-    acct_bal = Label(depositwin, text=f'Account Balance: {balance}')
-    acct_bal.grid(row=0, column=0)
+    fr = LabelFrame(depositwin, text='Deposit')
+    fr.grid(row=0, column=0, pady=10, padx=10, columnspan=3)
 
-    amount_lb = Label(depositwin, text='Enter Amount to Deposit: ')
-    amount_lb.grid(row=1, column=0)
+    acct_bal = Label(fr, text=f'Account Balance: {balance}')
+    acct_bal.grid(row=1, column=0, columnspan=2)
 
-    d_amount = Entry(depositwin, width= 30)
-    d_amount.grid(row=2, column=0, padx=20, pady=(10, 0))
+    amount_lb = Label(fr, text='Deposit Amount: ')
+    amount_lb.grid(row=2, column=0)
 
-    pin_lb = Label(depositwin, text='Enter Pin: ')
+    d_amount = Entry(fr, width= 30)
+    d_amount.grid(row=2, column=1, padx=20, pady=(10, 0))
+
+    pin_lb = Label(fr, text='Enter Pin: ')
     pin_lb.grid(row=3, column=0)
 
-    d_pin = Entry(depositwin, width= 30)
+    d_pin = Entry(fr, width= 30)
     d_pin.grid(row=3, column=1, padx=20, pady=(10, 0))
 
-    d_sub = Button(depositwin, text='Deposit', command=lambda: Deposit(int(d_amount.get()), int(d_pin.get())))
-    d_sub.grid(row=4, column=0, columnspan=2, padx=10, pady=(15,0), ipadx=146)
+    d_sub = Button(fr, text='Deposit', command=lambda: Deposit(int(d_amount.get()), int(d_pin.get())))
+    d_sub.grid(row=4, column=0, columnspan=2, padx=10, pady=(15,10))
+    d_sub.config(width=50)
+
+    Button(depositwin, text='Quit', command=lambda: depositwin.destroy()).grid(row=5, column=1, pady=(15, 0))
 
 def Deposit(amount, dp_pin):
     account = query(acct_num)
