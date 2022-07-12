@@ -147,24 +147,27 @@ def main_win():
     global mainwin
 
     mainwin = Tk()
-    mainwin.title('Welcome')
-    mainwin.geometry('250x300')
+    mainwin.title('KNAB EHT')
+    mainwin.geometry('265x300')
 
-    check_bal = Button(mainwin, text='Balance', command=check_balance)
+    fr = LabelFrame(mainwin, text='Welcome')
+    fr.grid(row=0, column=0, pady=10, padx=10)
+
+    check_bal = Button(fr, text='Balance', command=check_balance)
     check_bal.config(width=30)
     check_bal.grid(row=1, column=0, padx=10, pady=(15,0))
     
-    withdraw = Button(mainwin, text='Withdraw', command=withdrawal_win)
+    withdraw = Button(fr, text='Withdraw', command=withdrawal_win)
     withdraw.config(width=30)
     withdraw.grid(row=2, column=0, padx=10, pady=(15,0))
     
-    deposit = Button(mainwin, text='Deposit', command=deposit_win)
+    deposit = Button(fr, text='Deposit', command=deposit_win)
     deposit.config(width=30)
     deposit.grid(row=3, column=0, padx=10, pady=(15,0))
     
-    transfer = Button(mainwin, text='Transfer', command=transfer_win)
+    transfer = Button(fr, text='Transfer', command=transfer_win)
     transfer.config(width=30)
-    transfer.grid(row=4, column=0, padx=10, pady=(15,0))
+    transfer.grid(row=4, column=0, padx=10, pady=(15,10))
 
     Button(mainwin, text='Quit', command=lambda: mainwin.destroy()).grid(row=5, column=0, pady=(15, 0))
 
