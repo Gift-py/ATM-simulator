@@ -177,17 +177,36 @@ def main_win():
 def check_balance():
     global balwin
     balwin = Tk()
-    balwin.title('Account Balance')
-    balwin.geometry('400x200')
+    balwin.title('KNAB EHT')
+    balwin.geometry('250x250')
     
     account = query(acct_num)
     balance = account[0][-2]
 
-    name = Label(balwin, text=f'Hello {account[0][0]}')
-    name.grid(row=0, column=0)
-    
-    acct_bal = Label(balwin, text=f'Account Balance: {balance}')
-    acct_bal.grid(row=1, column=0)
+    fr = LabelFrame(balwin, text='Account Details')
+    fr.grid(row=0, column=0, pady=10, padx=10, columnspan=3)
+    fr.configure(width=350)
+
+    name = Label(fr, text=f'Account Name:')
+    name.grid(row=1, column=0, pady=15)
+
+    a_name = Label(fr, text=f'{account[0][0]}', anchor='w')
+    a_name.grid(row=1, column=2, pady=15)
+
+    num = Label(fr, text=f'Account Number:')
+    num.grid(row=2, column=0, pady=15)
+
+    a_num = Label(fr,  text = f'{account[0][-1]}', anchor='w')
+    a_num.grid(row=2, column=2, pady=15)
+
+    acct_bal = Label(fr, text=f'Account Balance:')
+    acct_bal.grid(row=3, column=0, pady=(15, 10))
+
+    bal = Label(fr, text=f'{balance}', anchor='w')
+    bal.grid(row=3, column=2, pady=15)
+
+    Button(balwin, text='Quit', command=lambda: balwin.destroy()).grid(row=4, column=1, pady=(15, 0))
+
 
 def withdrawal_win():
     global withdrawalwin
