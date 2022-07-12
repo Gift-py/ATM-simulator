@@ -17,7 +17,7 @@ def start_win():
     global root2
     root2 = Tk()
     root2.title('KNAB EHT')
-    root2.geometry('470x400')
+    root2.geometry('400x400')
     root2.configure(background="#efefef")
 
     f_name_lb = Label(root2, text='WELCOME TO KNAB EHT!', anchor='center')
@@ -27,10 +27,12 @@ def start_win():
     lb.grid(row=1, column=0, columnspan=4, pady=(10, 0), padx=10)
 
     create_acct_btn = Button(lb, text='Create Account', command=create_acct_win)
-    create_acct_btn.grid(row=2, column=0, columnspan=3, padx=10, pady=5, ipadx=139)
+    create_acct_btn.grid(row=2, column=0, columnspan=3, padx=10, pady=5)
+    create_acct_btn.config(width=50)
 
     login_btn = Button(lb, text='Input Card (Account No.)', command=login_win)
-    login_btn.grid(row=3, column=0, columnspan=3, padx=10, pady=5, ipadx=139)
+    login_btn.grid(row=3, column=0, columnspan=3, padx=10, pady=5)
+    login_btn.config(width=50)
 
     Button(root2, text='Quit', command=lambda: root.destroy()).grid(row=5, column=3, pady=(10, 10))
 
@@ -185,7 +187,6 @@ def check_balance():
 
     fr = LabelFrame(balwin, text='Account Details')
     fr.grid(row=0, column=0, pady=10, padx=10, columnspan=3)
-    fr.configure(width=350)
 
     name = Label(fr, text=f'Account Name:')
     name.grid(row=1, column=0, pady=15)
@@ -212,28 +213,34 @@ def withdrawal_win():
     global withdrawalwin
     withdrawalwin = Tk()
     withdrawalwin.geometry('400x400')
-    withdrawalwin.title('Withdraw')
+    withdrawalwin.title('KNAB EHT')
 
     account = query(acct_num)
     balance = account[0][-2]
 
-    acct_bal = Label(withdrawalwin, text=f'Account Balance: {balance}')
-    acct_bal.grid(row=0, column=0)
+    fr = LabelFrame(withdrawalwin, text='Withdrawal')
+    fr.grid(row=0, column=0, pady=10, padx=10, columnspan=3)
 
-    amount_lb = Label(withdrawalwin, text='Enter Amount to Withdraw: ')
-    amount_lb.grid(row=1, column=0)
+    acct_bal = Label(fr, text=f'Account Balance: {balance}')
+    acct_bal.grid(row=1, column=0, columnspan=2)
 
-    w_amount = Entry(withdrawalwin, width= 30)
-    w_amount.grid(row=2, column=0, padx=20, pady=(10, 0))
+    amount_lb = Label(fr, text='Withdrawal Amount: ')
+    amount_lb.grid(row=2, column=0)
 
-    pin_lb = Label(withdrawalwin, text='Enter Pin: ')
+    w_amount = Entry(fr, width= 30)
+    w_amount.grid(row=2, column=1, padx=20, pady=(10, 0))
+
+    pin_lb = Label(fr, text='Enter Pin: ')
     pin_lb.grid(row=3, column=0)
 
-    w_pin = Entry(withdrawalwin, width= 30)
+    w_pin = Entry(fr, width= 30)
     w_pin.grid(row=3, column=1, padx=20, pady=(10, 0))
 
-    w_sub = Button(withdrawalwin, text='Withdraw', command=lambda: Withdrawal(int(w_amount.get()), int(w_pin.get())))
-    w_sub.grid(row=4, column=0, columnspan=2, padx=10, pady=(15,0), ipadx=146)
+    w_sub = Button(fr, text='Withdraw', command=lambda: Withdrawal(int(w_amount.get()), int(w_pin.get())))
+    w_sub.grid(row=4, column=0, columnspan=2, padx=10, pady=(15,10))
+    w_sub.config(width=50)
+
+    Button(withdrawalwin, text='Quit', command=lambda: withdrawalwin.destroy()).grid(row=5, column=1, pady=(15, 0))
 
 def Withdrawal(amount, wd_pin):
     account = query(acct_num)
