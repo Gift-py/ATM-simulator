@@ -5,8 +5,8 @@ import customtkinter as ctk
 from tkinter import messagebox
 from atm_utils import *
 
-ctk.set_appearance_mode('dark')
-ctk.set_default_color_theme('blue')
+ctk.set_appearance_mode('light')
+ctk.set_default_color_theme('green')
 
 TRIES = 0
 global root
@@ -22,7 +22,7 @@ def start_win():
     root2.title('KNAB EHT')
     root2.geometry('400x400')
 
-    f_name_lb = CTkLabel(root2, text='WELCOME TO KNAB EHT!', width=100, bg='#000000', corner_radius=8)
+    f_name_lb = CTkLabel(root2, text='WELCOME TO KNAB EHT!')
     f_name_lb.grid(row=0, column=1, columnspan=2, padx=90, pady=15)
 
     lb = CTkFrame(root2, width=300, height=200, corner_radius=8)
@@ -47,7 +47,7 @@ def create_acct_win():
     createwin.title('KNAB EHT')
     createwin.geometry('400x350')
 
-    f_name_lb = CTkLabel(createwin, text='Create Account', width=100, bg='#30363d', corner_radius=8)
+    f_name_lb = CTkLabel(createwin, text='Create Account')
     f_name_lb.grid(row=0, column=0, padx=50, pady=(20,5))
 
     fr = CTkFrame(createwin, width=300, height=300)
@@ -182,7 +182,7 @@ def main_win():
     mainwin.title('KNAB EHT')
     mainwin.geometry('265x350')
 
-    f_name_lb = CTkLabel(mainwin, text=f'Welcome {name} 😄👋🏿', width=100, bg='#30363d', corner_radius=8)
+    f_name_lb = CTkLabel(mainwin, text=f'Welcome {name}')
     f_name_lb.grid(row=0, column=0, padx=60, pady=10)
 
     fr = CTkFrame(mainwin)
@@ -209,68 +209,77 @@ def main_win():
 
 def check_balance():
     global balwin
-    balwin = Tk()
+    balwin = CTk()
     balwin.title('KNAB EHT')
-    balwin.geometry('250x250')
+    balwin.geometry('400x400')
     
     account = query(acct_num)
     balance = account[0][-2]
 
-    fr = LabelFrame(balwin, text='Account Details')
-    fr.grid(row=0, column=0, pady=10, padx=10, columnspan=3)
+    f_name_lb = CTkLabel(balwin, text='Account Details')
+    f_name_lb.grid(row=0, column=1, padx=50, pady=(20,5))
 
-    name = Label(fr, text=f'Account Name:')
-    name.grid(row=1, column=0, pady=15)
+    fr = CTkFrame(balwin)
+    fr.grid(row=1, column=0, pady=10, padx=60, columnspan=3)
 
-    a_name = Label(fr, text=f'{account[0][0]}', anchor='w')
-    a_name.grid(row=1, column=2, pady=15)
+    name = CTkLabel(fr, text=f'Account Name:')
+    name.grid(row=2, column=0, pady=15)
 
-    num = Label(fr, text=f'Account Number:')
-    num.grid(row=2, column=0, pady=15)
+    a_name = CTkLabel(fr, text=f'{account[0][0]}', anchor='w')
+    a_name.grid(row=2, column=2, pady=15)
 
-    a_num = Label(fr,  text = f'{account[0][-1]}', anchor='w')
-    a_num.grid(row=2, column=2, pady=15)
+    num = CTkLabel(fr, text=f'Account Number:')
+    num.grid(row=3, column=0, pady=15)
 
-    acct_bal = Label(fr, text=f'Account Balance:')
-    acct_bal.grid(row=3, column=0, pady=(15, 10))
+    a_num = CTkLabel(fr,  text = f'{account[0][-1]}', anchor='w')
+    a_num.grid(row=3, column=2, pady=15)
 
-    bal = Label(fr, text=f'{balance}', anchor='w')
-    bal.grid(row=3, column=2, pady=15)
+    acct_bal = CTkLabel(fr, text=f'Account Balance:')
+    acct_bal.grid(row=4, column=0, pady=(15, 10))
 
-    Button(balwin, text='Quit', command=lambda: balwin.destroy()).grid(row=4, column=1, pady=(15, 0))
+    bal = CTkLabel(fr, text=f'{balance}', anchor='w')
+    bal.grid(row=4, column=2, pady=15)
+
+    CTkButton(balwin, text='Quit', command=lambda: balwin.destroy()).grid(row=5, column=1, padx=75, pady=(15, 0))
+
+    balwin.mainloop()
 
 def withdrawal_win():
     global withdrawalwin
-    withdrawalwin = Tk()
+    withdrawalwin = CTk()
     withdrawalwin.geometry('400x400')
     withdrawalwin.title('KNAB EHT')
 
     account = query(acct_num)
     balance = account[0][-2]
 
-    fr = LabelFrame(withdrawalwin, text='Withdrawal')
-    fr.grid(row=0, column=0, pady=10, padx=10, columnspan=3)
+    f_name_lb = CTkLabel(withdrawalwin, text='Withdrawal Menu')
+    f_name_lb.grid(row=0, column=0, padx=60, pady=10, columnspan=2)
 
-    acct_bal = Label(fr, text=f'Account Balance: {balance}')
-    acct_bal.grid(row=1, column=0, columnspan=2)
+    fr = CTkFrame(withdrawalwin)
+    fr.grid(row=1, column=0, pady=10, padx=40, columnspan=2)
 
-    amount_lb = Label(fr, text='Withdrawal Amount: ')
-    amount_lb.grid(row=2, column=0)
+    acct_bal = CTkLabel(fr, text=f'Account Balance: {balance}')
+    acct_bal.grid(row=2, column=0, columnspan=2)
 
-    w_amount = Entry(fr, width= 30)
-    w_amount.grid(row=2, column=1, padx=20, pady=(10, 0))
+    amount_lb = CTkLabel(fr, text='Withdrawal Amount: ')
+    amount_lb.grid(row=3, column=0)
 
-    pin_lb = Label(fr, text='Enter Pin: ')
-    pin_lb.grid(row=3, column=0)
+    w_amount = CTkEntry(fr, width= 150)
+    w_amount.grid(row=3, column=1, padx=20, pady=(10, 0))
 
-    w_pin = Entry(fr, width= 30)
-    w_pin.grid(row=3, column=1, padx=20, pady=(10, 0))
+    pin_lb = CTkLabel(fr, text='Enter Pin: ')
+    pin_lb.grid(row=4, column=0)
 
-    w_sub = Button(fr, text='Withdraw', command=lambda: Withdrawal(w_amount.get(), w_pin.get()))
-    w_sub.grid(row=4, column=0, columnspan=2, padx=10, pady=(15,10))
-    w_sub.config(width=50)
+    w_pin = CTkEntry(fr, width= 150)
+    w_pin.grid(row=4, column=1, padx=20, pady=(10, 0))
 
-    Button(withdrawalwin, text='Quit', command=lambda: withdrawalwin.destroy()).grid(row=5, column=1, pady=(15, 0))
+    w_sub = CTkButton(fr, text='Withdraw', command=lambda: Withdrawal(w_amount.get(), w_pin.get()))
+    w_sub.grid(row=5, column=0, columnspan=2, padx=20, pady=(15,10))
+
+    CTkButton(withdrawalwin, text='Quit', command=lambda: withdrawalwin.destroy()).grid(row=6, column=0, columnspan=2, padx=60, pady=(15, 0))
+
+    withdrawalwin.mainloop()
 
 def Withdrawal(amount, wd_pin):
     account = query(acct_num)
@@ -313,36 +322,40 @@ def Withdrawal(amount, wd_pin):
 def deposit_win():
     global depositwin
 
-    depositwin = Tk()
+    depositwin = CTk()
     depositwin.geometry('400x400')
     depositwin.title('Deposit')
     
     account = query(acct_num)
     balance = account[0][-2]
 
-    fr = LabelFrame(depositwin, text='Deposit')
-    fr.grid(row=0, column=0, pady=10, padx=10, columnspan=3)
+    f_name_lb = CTkLabel(depositwin, text='Deposit Menu')
+    f_name_lb.grid(row=0, column=0, padx=60, pady=10, columnspan=2)
 
-    acct_bal = Label(fr, text=f'Account Balance: {balance}')
+    fr = CTkFrame(depositwin)
+    fr.grid(row=1, column=0, pady=10, padx=40, columnspan=2)
+
+    acct_bal = CTkLabel(fr, text=f'Account Balance: {balance}')
     acct_bal.grid(row=1, column=0, columnspan=2)
 
-    amount_lb = Label(fr, text='Deposit Amount: ')
+    amount_lb = CTkLabel(fr, text='Deposit Amount: ')
     amount_lb.grid(row=2, column=0)
 
-    d_amount = Entry(fr, width= 30)
+    d_amount = CTkEntry(fr, width= 150)
     d_amount.grid(row=2, column=1, padx=20, pady=(10, 0))
 
-    pin_lb = Label(fr, text='Enter Pin: ')
+    pin_lb = CTkLabel(fr, text='Enter Pin: ')
     pin_lb.grid(row=3, column=0)
 
-    d_pin = Entry(fr, width= 30)
+    d_pin = CTkEntry(fr, width= 150)
     d_pin.grid(row=3, column=1, padx=20, pady=(10, 0))
 
-    d_sub = Button(fr, text='Deposit', command=lambda: Deposit(d_amount.get(), d_pin.get()))
+    d_sub = CTkButton(fr, text='Deposit', command=lambda: Deposit(d_amount.get(), d_pin.get()))
     d_sub.grid(row=4, column=0, columnspan=2, padx=10, pady=(15,10))
-    d_sub.config(width=50)
 
-    Button(depositwin, text='Quit', command=lambda: depositwin.destroy()).grid(row=5, column=1, pady=(15, 0))
+    CTkButton(depositwin, text='Quit', command=lambda: depositwin.destroy()).grid(row=6, column=0, columnspan=2, padx=60, pady=(15, 0))
+
+    depositwin.mainloop()
 
 def Deposit(amount, dp_pin):
     account = query(acct_num)
@@ -379,42 +392,47 @@ def Deposit(amount, dp_pin):
 
 def transfer_win():
     global transferwin
-    transferwin = Tk()
+    transferwin = CTk()
     transferwin.geometry('400x500')
     transferwin.title('KNAB EHT')
 
     account = query(acct_num)
     balance = account[0][-2]
 
-    fr = LabelFrame(transferwin, text='Transfer')
-    fr.grid(row=0, column=0, pady=10, padx=10, columnspan=3)
+    f_name_lb = CTkLabel(transferwin, text='Transfer Menu')
+    f_name_lb.grid(row=0, column=0, padx=60, pady=10, columnspan=2)
 
-    acct_bal = Label(fr, text=f'Account Balance: {balance}')
-    acct_bal.grid(row=1, column=0, columnspan=2)
+    fr = CTkFrame(transferwin)
+    fr.grid(row=1, column=0, pady=10, padx=40, columnspan=2)
 
-    bene_acct_lb = Label(fr, text='Beneficiary Account: ')
-    bene_acct_lb.grid(row=2, column=0)
+    acct_bal = CTkLabel(fr, text=f'Account Balance: {balance}')
+    acct_bal.grid(row=2, column=0, columnspan=2)
 
-    bene_acct = Entry(fr, width=30)
-    bene_acct.grid(row=2, column=1)
+    bene_acct_lb = CTkLabel(fr, text='Beneficiary Account: ')
+    bene_acct_lb.grid(row=3, column=0)
 
-    amount_lb = Label(fr, text='Amount: ')
-    amount_lb.grid(row=3, column=0)
+    bene_acct = CTkEntry(fr, width=150)
+    bene_acct.grid(row=3, column=1)
 
-    t_amount = Entry(fr, width= 30)
-    t_amount.grid(row=3, column=1, padx=20, pady=(10, 0))
+    amount_lb = CTkLabel(fr, text='Amount: ')
+    amount_lb.grid(row=4, column=0)
 
-    pin_lb = Label(fr, text='Enter Pin: ')
-    pin_lb.grid(row=4, column=0)
+    t_amount = CTkEntry(fr, width= 150)
+    t_amount.grid(row=4, column=1, padx=20, pady=(10, 0))
 
-    t_pin = Entry(fr, width= 30)
-    t_pin.grid(row=4, column=1, padx=20, pady=(10, 0))
+    pin_lb = CTkLabel(fr, text='Enter Pin: ')
+    pin_lb.grid(row=5, column=0)
 
-    t_sub = Button(fr, text='Transfer', command=lambda: t_confirm_win(bene_acct.get(), t_amount.get(), t_pin.get()))
+    t_pin = CTkEntry(fr, width= 150)
+    t_pin.grid(row=5, column=1, padx=20, pady=(10, 0))
+
+    t_sub = CTkButton(fr, text='Transfer', command=lambda: t_confirm_win(bene_acct.get(), t_amount.get(), t_pin.get()))
     t_sub.grid(row=6, column=0, columnspan=2, padx=10, pady=(15,10))
     t_sub.config(width=50)
 
-    Button(transferwin, text='Quit', command=lambda: transferwin.destroy()).grid(row=5, column=1, pady=(15, 0))
+    CTkButton(transferwin, text='Quit', command=lambda: transferwin.destroy()).grid(row=6, column=0, columnspan=2, padx=60, pady=(15, 0))
+
+    transferwin.mainloop()
 
 def t_confirm_win(account_number, amount, pin):
     assert account_number != '', messagebox.showerror('error', 'Are you planning on transferring to a ghost ?!')

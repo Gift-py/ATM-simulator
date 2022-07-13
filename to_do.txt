@@ -1,2 +1,3 @@
 gui design
+extra functionalities (IF POSSIBLE)
 
