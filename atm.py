@@ -255,13 +255,13 @@ def Withdrawal(amount, wd_pin):
     account = query(acct_num)
 
     assert amount != '', messagebox.showerror('error', 'Bruhh 💀, how much you wanna draw??!')
+    assert amount.isdigit(), messagebox.showerror('error', 'Bruhh, You can\'t withdraw letters 💀')
     assert wd_pin != '', messagebox.showerror('error', 'Are you dumb fam, you need to type in your 4 digit pin')
-    assert amount.isdigit(), messagebox.showerror('error', 'Bruhh, You can\'t withdraw numbers 💀')
     assert wd_pin.isdigit(), messagebox.showerror('error', 'Are you dumb fam, you need to type in your 4 digit pin')
 
     amount, wd_pin = int(amount), int(wd_pin)
 
-    if wd_pin in account[0]:
+    if wd_pin == account[0][1]:
         if amount > account[0][-2]:
             withdrawalwin.destroy()
             messagebox.showerror('error', f'Insufficient Balance')
@@ -317,7 +317,7 @@ def deposit_win():
     d_pin = Entry(fr, width= 30)
     d_pin.grid(row=3, column=1, padx=20, pady=(10, 0))
 
-    d_sub = Button(fr, text='Deposit', command=lambda: Deposit(int(d_amount.get()), int(d_pin.get())))
+    d_sub = Button(fr, text='Deposit', command=lambda: Deposit(d_amount.get(), d_pin.get()))
     d_sub.grid(row=4, column=0, columnspan=2, padx=10, pady=(15,10))
     d_sub.config(width=50)
 
@@ -325,7 +325,15 @@ def deposit_win():
 
 def Deposit(amount, dp_pin):
     account = query(acct_num)
-    if dp_pin in account[0]:
+
+    assert amount != '', messagebox.showerror('error', 'Bruhh 💀, how much you wanna deposit??!')
+    assert amount.isdigit(), messagebox.showerror('error', 'Bruhh, You can\'t deposit letters 💀')
+    assert dp_pin != '', messagebox.showerror('error', 'Are you dumb fam, you need to type in your 4 digit pin')
+    assert dp_pin.isdigit(), messagebox.showerror('error', 'Are you dumb fam, you need to type in your 4 digit pin')
+
+    amount, dp_pin = int(amount), int(dp_pin)
+
+    if dp_pin == account[0][1]:
             account = query(acct_num)
             new_bal = account[0][-2] + amount
             conn = sqlite3.connect('Bank_Accounts.db')
