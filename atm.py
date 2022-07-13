@@ -28,14 +28,16 @@ def start_win():
     lb = CTkFrame(root2, width=300, height=200, corner_radius=8)
     lb.grid(row=1, column=1, padx=90, pady=10)
 
-    
+    f_name_lb = CTkLabel(lb, text='ATM Services')
+    f_name_lb.grid(row=2, column=0, columnspan=3, padx=(50, 50), pady=(30, 5))
+
     create_acct_btn = CTkButton(lb, text="Create Account", command=create_acct_win)
-    create_acct_btn.grid(row=2, column=0, columnspan=3, padx=(50, 50), pady=(50,5))
+    create_acct_btn.grid(row=3, column=0, columnspan=3, padx=(50, 50), pady=(15,5))
 
     login_btn = CTkButton(lb, text="Input Card (Acct No.)", command=login_win)
-    login_btn.grid(row=3, column=0, columnspan=3, padx=(50, 50), pady=(5, 50))
+    login_btn.grid(row=4, column=0, columnspan=3, padx=(50, 50), pady=(5, 50))
     
-    CTkButton(root2, text='Quit', command=lambda: root2.destroy()).grid(row=4, column=1, padx=90, pady=(15, 10))
+    CTkButton(root2, text='Quit', command=lambda: root2.destroy()).grid(row=5, column=1, padx=90, pady=(15, 10))
 
     root2.mainloop()
 
@@ -43,38 +45,38 @@ def create_acct_win():
     global createwin
     createwin = CTk()
     createwin.title('KNAB EHT')
-    createwin.geometry('450x350')
+    createwin.geometry('400x350')
 
     f_name_lb = CTkLabel(createwin, text='Create Account', width=100, bg='#30363d', corner_radius=8)
-    f_name_lb.pack(padx=50, pady=(20,5))
+    f_name_lb.grid(row=0, column=0, padx=50, pady=(20,5))
 
-    fr = LabelFrame(createwin, width=300, height=300)
-    fr.pack(padx=50, pady=60)
+    fr = CTkFrame(createwin, width=300, height=300)
+    fr.grid(row=1, column=0, padx=20, pady=(10, 15))
 
-    # name_lb = Label(fr, text='Enter Name: ')
-    # name_lb.grid(row=1, column=0, pady=(10, 0))
+    name_lb = CTkLabel(fr, text='Enter Name: ')
+    name_lb.grid(row=1, column=0, pady=(10, 0))
 
-    # pin_lb = Label(fr, text='Enter Pin: ')
-    # pin_lb.grid(row=2, column=0)
+    pin_lb = CTkLabel(fr, text='Enter Pin: ')
+    pin_lb.grid(row=2, column=0)
 
-    # balance_lb = Label(fr, text='Deposit: ')
-    # balance_lb.grid(row=3, column=0)
+    balance_lb = CTkLabel(fr, text='Deposit: ')
+    balance_lb.grid(row=3, column=0)
 
-    # name = Entry(fr, width= 30)
-    # name.grid(row=1, column=1, padx=20, pady=(10, 0))
+    name = CTkEntry(fr, width= 150, corner_radius=8, border_width=1, placeholder_text='Full Name')
+    name.grid(row=1, column=1, padx=20, pady=(10, 0))
 
-    # pin = Entry(fr, width= 30)
-    # pin.grid(row=2, column=1)
+    pin = CTkEntry(fr, width= 150, corner_radius=8, border_width=1, placeholder_text='4 digit pin')
+    pin.grid(row=2, column=1)
 
-    # balance = Entry(fr, width= 30)
-    # balance.grid(row=3, column=1)
+    balance = CTkEntry(fr, width= 150, corner_radius=8, border_width=1, placeholder_text='Initial Deposit')
+    balance.grid(row=3, column=1)
 
-    # acct_create = Button(fr, text='Create Now', command=lambda: create_acct(name.get(), pin.get(), balance.get()))
-    # acct_create.grid(row=4, column=1, padx=10, pady=(15,10), ipadx=120)
+    acct_create = CTkButton(fr, text='Create Now', command=lambda: create_acct(name.get(), pin.get(), balance.get()))
+    acct_create.grid(row=4, column=1, padx=10, pady=(15,10), ipadx=30)
 
-    # Button(createwin, text='Quit', command=lambda: createwin.destroy()).grid(row=6, column=1, pady=15)
+    CTkButton(createwin, text='Quit', command=lambda: createwin.destroy()).grid(row=6, column=0, padx=50, pady=15)
 
-    # root2.destroy()
+    root2.destroy()
 
     createwin.mainloop()
 
