@@ -3,6 +3,7 @@ from tkinter import *
 from tkinter import messagebox
 
 from pyparsing import col
+from sqlalchemy import null
 from atm_utils import *
 
 TRIES = 0
@@ -389,20 +390,60 @@ def transfer_win():
     t_pin = Entry(fr, width= 30)
     t_pin.grid(row=4, column=1, padx=20, pady=(10, 0))
 
-    t_sub = Button(fr, text='Transfer', command=lambda: Transfer(bene_acct.get(), t_amount.get(), t_pin.get()))
+    t_sub = Button(fr, text='Transfer', command=lambda: t_confirm_win(bene_acct.get(), t_amount.get(), t_pin.get()))
     t_sub.grid(row=6, column=0, columnspan=2, padx=10, pady=(15,10))
     t_sub.config(width=50)
 
     Button(transferwin, text='Quit', command=lambda: transferwin.destroy()).grid(row=5, column=1, pady=(15, 0))
 
-def Transfer(account_number, amount, t_pin):
-    account = query(acct_num)
+def t_confirm_win(account_number, amount, pin):
+    assert account_number != '', messagebox.showerror('error', 'Are you planning on transferring to a ghost ?!')
+    assert account_number.isdigit(), messagebox.showerror('error', 'Imbecile, is called an account NUMBER for a reason!!')
+    assert amount != '', messagebox.showerror('error', 'Bruhh 💀, how much you wanna deposit??!')
+    assert amount.isdigit(), messagebox.showerror('error', 'Bruhh, You can\'t deposit letters 💀')
+    assert pin != '', messagebox.showerror('error', 'Are you dumb fam, you need to type in your 4 digit pin')
+    assert pin.isdigit(), messagebox.showerror('error', 'Are you dumb fam, you need to type in your 4 digit pin')
+    
+    global confirmwin
+    confirmwin = Tk()
+    confirmwin.geometry('250x250')
+    confirmwin.title('KNAB EHT')
+
+    bene_acct = query(account_number)
+    bene_name = bene_acct[0][0]
+
+    fr = LabelFrame(confirmwin, text='Confirm Transfer')
+    fr.grid(row=0, column=0, pady=10, padx=10, columnspan=3)
+
+    bene_acct_lb = Label(fr, text='Beneficiary Account: ')
+    bene_acct_lb.grid(row=1, column=0)
+
+    bene_acct = Label(fr, text=account_number)
+    bene_acct.grid(row=1, column=1)
+
+    amount_lb = Label(fr, text='Amount: ')
+    amount_lb.grid(row=2, column=0)
+
+    t_amount = Label(fr, text=amount)
+    t_amount.grid(row=2, column=1, padx=20, pady=(10, 0))
+
+    pin_lb = Label(fr, text='Beneficiary Name: ')
+    pin_lb.grid(row=3, column=0)
+
+    t_pin = Label(fr, text=bene_name)
+    t_pin.grid(row=3, column=1, padx=20, pady=(10, 0))
+
+    t_sub = Button(confirmwin, text='Transfer', command=lambda: Transfer(account_number, amount, pin))
+    t_sub.grid(row=4, column=2, padx=10, pady=(15,0))
+
+    Button(confirmwin, text='Cancel', command=lambda: confirmwin.destroy()).grid(row=4, column=0, pady=(15, 0))
+
+def Transfer(account_number, amount, t_pin):    
     conn = sqlite3.connect('Bank_Accounts.db')
     c = conn.cursor()
 
-    c.execute('SELECT * FROM Accounts where oid = ' + account_number)
     account = query(acct_num)
-    bene_account = c.fetchall()
+    bene_account = query(account_number)
 
     if int(t_pin) == account[0][1]:
         if float(amount) > account[0][2]:
