@@ -112,25 +112,29 @@ def create_acct(name, pin, balance):
 def login_win():
     global loginwin
     
-    loginwin = Tk()
+    loginwin = CTk()
     loginwin.title('KNAB EHT')
     loginwin.geometry('350x200')
 
-    card_lb = Label(loginwin, text='Card Received !', anchor='center')
+    card_lb = CTkLabel(loginwin, text='Card Received !')
     card_lb.grid(row=0, column=0, columnspan=2)
 
-    num_lb = Label(loginwin, text='Account No: ')
+    num_lb = CTkLabel(loginwin, text='Account No: ')
     num_lb.grid(row=1, column=0)
-    a_num = Entry(loginwin, width= 30)
+    
+    a_num = CTkEntry(loginwin, width= 150, corner_radius=8, border_width=1)
     a_num.grid(row=1, column=1, padx=20, pady=(10, 0))
 
-    pin_lb = Label(loginwin, text='Enter Pin: ')
+    pin_lb = CTkLabel(loginwin, text='Enter Pin: ')
     pin_lb.grid(row=2, column=0)
-    enter_pin = Entry(loginwin, width= 30)
+
+    enter_pin = CTkEntry(loginwin, width= 150, corner_radius=8, border_width=1)
     enter_pin.grid(row=2, column=1, padx=20, pady=(10, 0))
 
-    login_acct = Button(loginwin, text='Login', command=lambda: login(a_num.get(), enter_pin.get()))
-    login_acct.grid(row=3, column=0, columnspan=2, padx=10, pady=(25,0), ipadx=146)
+    login_acct = CTkButton(loginwin, text='Login', command=lambda: login(a_num.get(), enter_pin.get()))
+    login_acct.grid(row=3, column=0, columnspan=2, padx=10, pady=(25,0), ipadx=30)
+
+    loginwin.mainloop()
 
 def login(acct_number, pin):
     global TRIES 
@@ -172,34 +176,36 @@ def login(acct_number, pin):
 
 def main_win():
     global mainwin
-
-    mainwin = Tk()
+    account = query(acct_num)
+    name = account[0][0]
+    mainwin = CTk()
     mainwin.title('KNAB EHT')
-    mainwin.geometry('265x300')
+    mainwin.geometry('265x350')
 
-    fr = LabelFrame(mainwin, text='Welcome')
-    fr.grid(row=0, column=0, pady=10, padx=10)
+    f_name_lb = CTkLabel(mainwin, text=f'Welcome {name} 😄👋🏿', width=100, bg='#30363d', corner_radius=8)
+    f_name_lb.grid(row=0, column=0, padx=60, pady=10)
 
-    check_bal = Button(fr, text='Balance', command=check_balance)
-    check_bal.config(width=30)
-    check_bal.grid(row=1, column=0, padx=10, pady=(15,0))
-    
-    withdraw = Button(fr, text='Withdraw', command=withdrawal_win)
-    withdraw.config(width=30)
-    withdraw.grid(row=2, column=0, padx=10, pady=(15,0))
-    
-    deposit = Button(fr, text='Deposit', command=deposit_win)
-    deposit.config(width=30)
-    deposit.grid(row=3, column=0, padx=10, pady=(15,0))
-    
-    transfer = Button(fr, text='Transfer', command=transfer_win)
-    transfer.config(width=30)
-    transfer.grid(row=4, column=0, padx=10, pady=(15,10))
+    fr = CTkFrame(mainwin)
+    fr.grid(row=1, column=0, pady=10, padx=60)
 
-    Button(mainwin, text='Quit', command=lambda: mainwin.destroy()).grid(row=5, column=0, pady=(15, 0))
+    check_bal = CTkButton(fr, text='Check Balance', command=check_balance)
+    check_bal.grid(row=2, column=0, padx=10, pady=(15,0))
+    
+    withdraw = CTkButton(fr, text='Withdraw', command=withdrawal_win)
+    withdraw.grid(row=3, column=0, padx=10, pady=(15,0))
+
+    deposit = CTkButton(fr, text='Deposit', command=deposit_win)
+    deposit.grid(row=4, column=0, padx=10, pady=(15,0))
+    
+    transfer = CTkButton(fr, text='Transfer', command=transfer_win)
+    transfer.grid(row=5, column=0, padx=10, pady=(15,10))
+
+    CTkButton(mainwin, text='Quit', command=lambda: mainwin.destroy()).grid(row=6, column=0, pady=(15, 10))
 
     loginwin.destroy()
-    root2.destroy
+    root2.destroy()
+
+    mainwin.mainloop()
 
 def check_balance():
     global balwin
