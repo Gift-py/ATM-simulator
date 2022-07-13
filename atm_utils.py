@@ -1,6 +1,5 @@
 import sqlite3
 
-
 def query_all():
     conn = sqlite3.connect('Bank_Accounts.db')
     #create cursor
@@ -35,7 +34,8 @@ def delete(oid):
     #create cursor
     c = conn.cursor()
 
-    c.execute('DELETE from Accounts')# WHERE oid= '+ int(oid))
+    c.execute('DELETE from Accounts WHERE oid= '+ str(oid))
+    print('Account deleted successfully')
 
     #commit changes
     conn.commit()

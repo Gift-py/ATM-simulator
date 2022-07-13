@@ -72,9 +72,11 @@ def create_acct_win():
     root2.destroy()
 
 def create_acct(name, pin, balance):
+    
     if(name == '' or pin == ''):
         messagebox.showerror('error', 'Idiot we need a name and a pin for this to work 😭')
     else:
+        assert pin.isdigit() and len(pin) == 4, messagebox.showerror('error', 'You need a four digit pin please 😅')
         if balance == '':
             balance = 0
             messagebox.showinfo('information', 'It seems you\'re suffering from Sapa')
@@ -221,7 +223,6 @@ def check_balance():
     bal.grid(row=3, column=2, pady=15)
 
     Button(balwin, text='Quit', command=lambda: balwin.destroy()).grid(row=4, column=1, pady=(15, 0))
-
 
 def withdrawal_win():
     global withdrawalwin
@@ -414,7 +415,7 @@ def t_confirm_win(account_number, amount, pin):
         confirmwin = Tk()
         confirmwin.geometry('250x250')
         confirmwin.title('KNAB EHT')
-        
+
         bene_name = bene_acct[0][0]
 
         fr = LabelFrame(confirmwin, text='Confirm Transfer')
