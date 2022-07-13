@@ -1,9 +1,5 @@
-import sqlite3
 from tkinter import *
 from tkinter import messagebox
-
-from pyparsing import col
-from sqlalchemy import null
 from atm_utils import *
 
 TRIES = 0

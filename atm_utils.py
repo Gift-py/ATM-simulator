@@ -42,8 +42,6 @@ def delete(oid):
     #close connection
     conn.close()
 
-
-
 # create db
 # conn = sqlite3.connect('Bank_Accounts.db')
 # create cursor
