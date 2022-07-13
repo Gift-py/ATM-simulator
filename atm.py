@@ -1,71 +1,82 @@
 from tkinter import *
+import tkinter as tk
+from customtkinter import *
+import customtkinter as ctk
 from tkinter import messagebox
 from atm_utils import *
 
+ctk.set_appearance_mode('dark')
+ctk.set_default_color_theme('blue')
+
 TRIES = 0
 global root
-root = Tk()
+root = ctk.CTk()
 root.title('Root Win')
-root.geometry('100x100')
-root.configure(background="#fbfaf5")
-Button(root, text='Quit', command=lambda: root.destroy()).grid(row=0, column=0)
+root.geometry('400x400')
+ctk.CTkButton(root, text='Quit', command=lambda: root.destroy()).grid(row=0, column=0)
+ctk.CTkButton(root, text='Start', command=lambda: start_win()).grid(row=0, column=1)
 
 def start_win():
     global root2
-    root2 = Tk()
+    root2 = CTk()
     root2.title('KNAB EHT')
     root2.geometry('400x400')
-    root2.configure(background="#efefef")
 
-    f_name_lb = Label(root2, text='WELCOME TO KNAB EHT!', anchor='center')
-    f_name_lb.grid(row=0, column=2, pady=(10, 0), padx=5)
+    f_name_lb = CTkLabel(root2, text='WELCOME TO KNAB EHT!', width=100, bg='#000000', corner_radius=8)
+    f_name_lb.grid(row=0, column=1, columnspan=2, padx=90, pady=15)
 
-    lb = LabelFrame(root2, text='Available Services')
-    lb.grid(row=1, column=0, columnspan=4, pady=(10, 0), padx=10)
+    lb = CTkFrame(root2, width=300, height=200, corner_radius=8)
+    lb.grid(row=1, column=1, padx=90, pady=10)
 
-    create_acct_btn = Button(lb, text='Create Account', command=create_acct_win)
-    create_acct_btn.grid(row=2, column=0, columnspan=3, padx=10, pady=5)
-    create_acct_btn.config(width=50)
+    
+    create_acct_btn = CTkButton(lb, text="Create Account", command=create_acct_win)
+    create_acct_btn.grid(row=2, column=0, columnspan=3, padx=(50, 50), pady=(50,5))
 
-    login_btn = Button(lb, text='Input Card (Account No.)', command=login_win)
-    login_btn.grid(row=3, column=0, columnspan=3, padx=10, pady=5)
-    login_btn.config(width=50)
+    login_btn = CTkButton(lb, text="Input Card (Acct No.)", command=login_win)
+    login_btn.grid(row=3, column=0, columnspan=3, padx=(50, 50), pady=(5, 50))
+    
+    CTkButton(root2, text='Quit', command=lambda: root2.destroy()).grid(row=4, column=1, padx=90, pady=(15, 10))
 
-    Button(root2, text='Quit', command=lambda: root.destroy()).grid(row=5, column=3, pady=(10, 10))
+    root2.mainloop()
 
 def create_acct_win():
     global createwin
-    createwin = Tk()
+    createwin = CTk()
     createwin.title('KNAB EHT')
     createwin.geometry('450x350')
 
-    fr = LabelFrame(createwin, text='Create Account')
-    fr.grid(row=0, column=0, columnspan=2, pady=10, padx=10)
+    f_name_lb = CTkLabel(createwin, text='Create Account', width=100, bg='#30363d', corner_radius=8)
+    f_name_lb.pack(padx=50, pady=(20,5))
 
-    name_lb = Label(fr, text='Enter Name: ')
-    name_lb.grid(row=1, column=0, pady=(10, 0))
+    fr = LabelFrame(createwin, width=300, height=300)
+    fr.pack(padx=50, pady=60)
 
-    pin_lb = Label(fr, text='Enter Pin: ')
-    pin_lb.grid(row=2, column=0)
+    # name_lb = Label(fr, text='Enter Name: ')
+    # name_lb.grid(row=1, column=0, pady=(10, 0))
 
-    balance_lb = Label(fr, text='Deposit: ')
-    balance_lb.grid(row=3, column=0)
+    # pin_lb = Label(fr, text='Enter Pin: ')
+    # pin_lb.grid(row=2, column=0)
 
-    name = Entry(fr, width= 30)
-    name.grid(row=1, column=1, padx=20, pady=(10, 0))
+    # balance_lb = Label(fr, text='Deposit: ')
+    # balance_lb.grid(row=3, column=0)
 
-    pin = Entry(fr, width= 30)
-    pin.grid(row=2, column=1)
+    # name = Entry(fr, width= 30)
+    # name.grid(row=1, column=1, padx=20, pady=(10, 0))
 
-    balance = Entry(fr, width= 30)
-    balance.grid(row=3, column=1)
+    # pin = Entry(fr, width= 30)
+    # pin.grid(row=2, column=1)
 
-    acct_create = Button(fr, text='Create Now', command=lambda: create_acct(name.get(), pin.get(), balance.get()))
-    acct_create.grid(row=4, column=1, padx=10, pady=(15,10), ipadx=120)
+    # balance = Entry(fr, width= 30)
+    # balance.grid(row=3, column=1)
 
-    Button(createwin, text='Quit', command=lambda: createwin.destroy()).grid(row=6, column=1, pady=15)
+    # acct_create = Button(fr, text='Create Now', command=lambda: create_acct(name.get(), pin.get(), balance.get()))
+    # acct_create.grid(row=4, column=1, padx=10, pady=(15,10), ipadx=120)
 
-    root2.destroy()
+    # Button(createwin, text='Quit', command=lambda: createwin.destroy()).grid(row=6, column=1, pady=15)
+
+    # root2.destroy()
+
+    createwin.mainloop()
 
 def create_acct(name, pin, balance):
     
@@ -485,7 +496,6 @@ def Transfer(account_number, amount, t_pin):
     #close connection
     conn.close()
 
-print(query_all())
-start_win()
-mainloop()
+#print(query_all())
+root.mainloop()
 
