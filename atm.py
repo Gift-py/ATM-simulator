@@ -137,6 +137,11 @@ def login(acct_number, pin):
     c.execute('SELECT *, oid from Accounts WHERE oid='+acct_num)
     account = c.fetchall()
 
+    if account == []:
+        messagebox.showerror('error', 'This Account... Does not exist... 😭')
+        messagebox.showinfo('information', 'If you do not have an account try creating one.. It is really easy')
+        return
+
     pin_value = int(pin)
     if TRIES >= 3:
         messagebox.showerror('error', f'Tries Limit Reached !!')
@@ -153,7 +158,6 @@ def login(acct_number, pin):
         TRIES = TRIES + 1
         loginwin.destroy()
         login_win()
-    
 
 def main_win():
     global mainwin
@@ -399,44 +403,47 @@ def transfer_win():
 def t_confirm_win(account_number, amount, pin):
     assert account_number != '', messagebox.showerror('error', 'Are you planning on transferring to a ghost ?!')
     assert account_number.isdigit(), messagebox.showerror('error', 'Imbecile, is called an account NUMBER for a reason!!')
-    assert amount != '', messagebox.showerror('error', 'Bruhh 💀, how much you wanna deposit??!')
-    assert amount.isdigit(), messagebox.showerror('error', 'Bruhh, You can\'t deposit letters 💀')
+    assert amount != '', messagebox.showerror('error', 'Bruhh 💀, how much you wanna Transfer??!')
+    assert amount.isdigit(), messagebox.showerror('error', 'Idiot, You can\'t transfer letters 💀')
     assert pin != '', messagebox.showerror('error', 'Are you dumb fam, you need to type in your 4 digit pin')
     assert pin.isdigit(), messagebox.showerror('error', 'Are you dumb fam, you need to type in your 4 digit pin')
-    
-    global confirmwin
-    confirmwin = Tk()
-    confirmwin.geometry('250x250')
-    confirmwin.title('KNAB EHT')
 
     bene_acct = query(account_number)
-    bene_name = bene_acct[0][0]
+    if bene_acct != []:
+        global confirmwin
+        confirmwin = Tk()
+        confirmwin.geometry('250x250')
+        confirmwin.title('KNAB EHT')
+        
+        bene_name = bene_acct[0][0]
 
-    fr = LabelFrame(confirmwin, text='Confirm Transfer')
-    fr.grid(row=0, column=0, pady=10, padx=10, columnspan=3)
+        fr = LabelFrame(confirmwin, text='Confirm Transfer')
+        fr.grid(row=0, column=0, pady=10, padx=10, columnspan=3)
 
-    bene_acct_lb = Label(fr, text='Beneficiary Account: ')
-    bene_acct_lb.grid(row=1, column=0)
+        bene_acct_lb = Label(fr, text='Beneficiary Account: ')
+        bene_acct_lb.grid(row=1, column=0)
 
-    bene_acct = Label(fr, text=account_number)
-    bene_acct.grid(row=1, column=1)
+        bene_acct = Label(fr, text=account_number)
+        bene_acct.grid(row=1, column=1)
 
-    amount_lb = Label(fr, text='Amount: ')
-    amount_lb.grid(row=2, column=0)
+        amount_lb = Label(fr, text='Amount: ')
+        amount_lb.grid(row=2, column=0)
 
-    t_amount = Label(fr, text=amount)
-    t_amount.grid(row=2, column=1, padx=20, pady=(10, 0))
+        t_amount = Label(fr, text=amount)
+        t_amount.grid(row=2, column=1, padx=20, pady=(10, 0))
 
-    pin_lb = Label(fr, text='Beneficiary Name: ')
-    pin_lb.grid(row=3, column=0)
+        pin_lb = Label(fr, text='Beneficiary Name: ')
+        pin_lb.grid(row=3, column=0)
 
-    t_pin = Label(fr, text=bene_name)
-    t_pin.grid(row=3, column=1, padx=20, pady=(10, 0))
+        t_pin = Label(fr, text=bene_name)
+        t_pin.grid(row=3, column=1, padx=20, pady=(10, 0))
 
-    t_sub = Button(confirmwin, text='Transfer', command=lambda: Transfer(account_number, amount, pin))
-    t_sub.grid(row=4, column=2, padx=10, pady=(15,0))
+        t_sub = Button(confirmwin, text='Transfer', command=lambda: Transfer(account_number, amount, pin))
+        t_sub.grid(row=4, column=2, padx=10, pady=(15,0))
 
-    Button(confirmwin, text='Cancel', command=lambda: confirmwin.destroy()).grid(row=4, column=0, pady=(15, 0))
+        Button(confirmwin, text='Cancel', command=lambda: confirmwin.destroy()).grid(row=4, column=0, pady=(15, 0))
+    else:
+        messagebox.showerror('error', 'This account does not exist in our bank 🤔')
 
 def Transfer(account_number, amount, t_pin):    
     conn = sqlite3.connect('Bank_Accounts.db')
