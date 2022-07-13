@@ -71,23 +71,30 @@ def create_acct_win():
     root2.destroy()
 
 def create_acct(name, pin, balance):
-    conn = sqlite3.connect('Bank_Accounts.db')
-    c = conn.cursor()
-    c.execute('INSERT INTO Accounts VALUES(:Name, :Pin, :Balance)',
-    {
-        'Name': name,
-        'Pin': pin,
-        'Balance': float(balance)
-    }
-    )
-    accounts = query_all()
-    createwin.destroy()
-    messagebox.showinfo('information', f'Account created Successfully! \n Account Number is: {accounts[-1][-1] + 1}')
+    if(name == '' or pin == ''):
+        messagebox.showerror('error', 'Idiot we need a name and a pin for this to work 😭')
 
-    conn.commit()
-    conn.close()
+    else:
+        if balance == '':
+            balance = 0
+            messagebox.showinfo('information', 'It seems you\'re suffering from Sapa')
+        conn = sqlite3.connect('Bank_Accounts.db')
+        c = conn.cursor()
+        c.execute('INSERT INTO Accounts VALUES(:Name, :Pin, :Balance)',
+        {
+            'Name': name,
+            'Pin': pin,
+            'Balance': float(balance)
+        }
+        )
+        accounts = query_all()
+        createwin.destroy()
+        messagebox.showinfo('information', f'Account created Successfully! \n Account Number is: {accounts[-1][-1] + 1}')
 
-    print('Account Created Succesfully')
+        conn.commit()
+        conn.close()
+
+        print('Account Created Succesfully')
 
     start_win()
 
@@ -118,31 +125,32 @@ def login(acct_number, pin):
     global TRIES 
     global acct_num
 
-    acct_num = acct_number
-    conn = sqlite3.connect('Bank_Accounts.db')
-    c = conn.cursor()
-    
-    c.execute('SELECT *, oid from Accounts WHERE oid='+acct_num)
-    account = c.fetchall()
-
-    pin_value = int(pin)
-    if TRIES >= 3:
-        messagebox.showerror('error', f'Tries Limit Reached !!')
-        loginwin.destroy()
-        return
-    
-    if pin_value in account[0]:
-        messagebox.showinfo('information', f'Pin Correct \n Welcome {account[0][0]}')
-        main_win()
-        
+    if(acct_number == '' or pin == ''):
+        messagebox.showerror('error', 'Idiot enter the fields completely 🤦🏿‍♂️')
     else:
-        messagebox.showerror('error', f'Pin Incorrect \n {3-TRIES} more trie(s)')
-        print(TRIES, "try: ", pin_value)
-        TRIES = TRIES + 1
-        loginwin.destroy()
-        login_win()
-    
-    account = query(acct_num)
+        acct_num = acct_number
+        conn = sqlite3.connect('Bank_Accounts.db')
+        c = conn.cursor()
+        
+        c.execute('SELECT *, oid from Accounts WHERE oid='+acct_num)
+        account = c.fetchall()
+
+        pin_value = int(pin)
+        if TRIES >= 3:
+            messagebox.showerror('error', f'Tries Limit Reached !!')
+            loginwin.destroy()
+            return
+        
+        if pin_value in account[0]:
+            messagebox.showinfo('information', f'Pin Correct \n Welcome {account[0][0]}')
+            main_win()
+            
+        else:
+            messagebox.showerror('error', f'Pin Incorrect \n {3-TRIES} more trie(s)')
+            print(TRIES, "try: ", pin_value)
+            TRIES = TRIES + 1
+            loginwin.destroy()
+            login_win()
     
 
 def main_win():
@@ -335,34 +343,40 @@ def transfer_win():
     global transferwin
     transferwin = Tk()
     transferwin.geometry('400x500')
-    transferwin.title('Transfer')
+    transferwin.title('KNAB EHT')
 
     account = query(acct_num)
     balance = account[0][-2]
 
-    acct_bal = Label(transferwin, text=f'Account Balance: {balance}')
-    acct_bal.grid(row=0, column=0)
+    fr = LabelFrame(transferwin, text='Transfer')
+    fr.grid(row=0, column=0, pady=10, padx=10, columnspan=3)
 
-    bene_acct_lb = Label(transferwin, text='Enter Beneficiary Account: ')
-    bene_acct_lb.grid(row=1, column=0)
+    acct_bal = Label(fr, text=f'Account Balance: {balance}')
+    acct_bal.grid(row=1, column=0, columnspan=2)
 
-    bene_acct = Entry(transferwin, width=30)
-    bene_acct.grid(row=2, column=0)
+    bene_acct_lb = Label(fr, text='Beneficiary Account: ')
+    bene_acct_lb.grid(row=2, column=0)
 
-    amount_lb = Label(transferwin, text='Enter Amount to Transfer: ')
+    bene_acct = Entry(fr, width=30)
+    bene_acct.grid(row=2, column=1)
+
+    amount_lb = Label(fr, text='Amount: ')
     amount_lb.grid(row=3, column=0)
 
-    t_amount = Entry(transferwin, width= 30)
-    t_amount.grid(row=4, column=0, padx=20, pady=(10, 0))
+    t_amount = Entry(fr, width= 30)
+    t_amount.grid(row=3, column=1, padx=20, pady=(10, 0))
 
-    pin_lb = Label(transferwin, text='Enter Pin: ')
-    pin_lb.grid(row=5, column=0)
+    pin_lb = Label(fr, text='Enter Pin: ')
+    pin_lb.grid(row=4, column=0)
 
-    t_pin = Entry(transferwin, width= 30)
-    t_pin.grid(row=5, column=1, padx=20, pady=(10, 0))
+    t_pin = Entry(fr, width= 30)
+    t_pin.grid(row=4, column=1, padx=20, pady=(10, 0))
 
-    t_sub = Button(transferwin, text='Transfer', command=lambda: Transfer(bene_acct.get(), t_amount.get(), t_pin.get()))
-    t_sub.grid(row=6, column=0, columnspan=2, padx=10, pady=(15,0), ipadx=146)
+    t_sub = Button(fr, text='Transfer', command=lambda: Transfer(bene_acct.get(), t_amount.get(), t_pin.get()))
+    t_sub.grid(row=6, column=0, columnspan=2, padx=10, pady=(15,10))
+    t_sub.config(width=50)
+
+    Button(transferwin, text='Quit', command=lambda: transferwin.destroy()).grid(row=5, column=1, pady=(15, 0))
 
 def Transfer(account_number, amount, t_pin):
     account = query(acct_num)
