@@ -73,7 +73,6 @@ def create_acct_win():
 def create_acct(name, pin, balance):
     if(name == '' or pin == ''):
         messagebox.showerror('error', 'Idiot we need a name and a pin for this to work 😭')
-
     else:
         if balance == '':
             balance = 0
@@ -96,7 +95,7 @@ def create_acct(name, pin, balance):
 
         print('Account Created Succesfully')
 
-    start_win()
+        start_win()
 
 def login_win():
     global loginwin
@@ -125,32 +124,34 @@ def login(acct_number, pin):
     global TRIES 
     global acct_num
 
-    if(acct_number == '' or pin == ''):
-        messagebox.showerror('error', 'Idiot enter the fields completely 🤦🏿‍♂️')
-    else:
-        acct_num = acct_number
-        conn = sqlite3.connect('Bank_Accounts.db')
-        c = conn.cursor()
-        
-        c.execute('SELECT *, oid from Accounts WHERE oid='+acct_num)
-        account = c.fetchall()
+    assert acct_number != '', messagebox.showerror('error', 'Bruhh!! Put in your account number')
+    assert pin != '', messagebox.showerror('error', 'My guy, what \'bout your pin?!')
+    assert acct_number.isdigit(), messagebox.showerror('error', 'It\'s called account NUMBER for a reson idiot!')
+    assert pin.isdigit(), messagebox.showerror('error', 'Are you dumb fam, you need to type in your 4 DIGIT pin')
 
-        pin_value = int(pin)
-        if TRIES >= 3:
-            messagebox.showerror('error', f'Tries Limit Reached !!')
-            loginwin.destroy()
-            return
+    acct_num = acct_number
+    conn = sqlite3.connect('Bank_Accounts.db')
+    c = conn.cursor()
         
-        if pin_value in account[0]:
-            messagebox.showinfo('information', f'Pin Correct \n Welcome {account[0][0]}')
-            main_win()
+    c.execute('SELECT *, oid from Accounts WHERE oid='+acct_num)
+    account = c.fetchall()
+
+    pin_value = int(pin)
+    if TRIES >= 3:
+        messagebox.showerror('error', f'Tries Limit Reached !!')
+        loginwin.destroy()
+        return
+        
+    if pin_value == account[0][1]:
+        messagebox.showinfo('information', f'Pin Correct \n Welcome {account[0][0]}')
+        main_win()
             
-        else:
-            messagebox.showerror('error', f'Pin Incorrect \n {3-TRIES} more trie(s)')
-            print(TRIES, "try: ", pin_value)
-            TRIES = TRIES + 1
-            loginwin.destroy()
-            login_win()
+    else:
+        messagebox.showerror('error', f'Pin Incorrect \n {3-TRIES} more trie(s)')
+        print(TRIES, "try: ", pin_value)
+        TRIES = TRIES + 1
+        loginwin.destroy()
+        login_win()
     
 
 def main_win():
@@ -244,7 +245,7 @@ def withdrawal_win():
     w_pin = Entry(fr, width= 30)
     w_pin.grid(row=3, column=1, padx=20, pady=(10, 0))
 
-    w_sub = Button(fr, text='Withdraw', command=lambda: Withdrawal(int(w_amount.get()), int(w_pin.get())))
+    w_sub = Button(fr, text='Withdraw', command=lambda: Withdrawal(w_amount.get(), w_pin.get()))
     w_sub.grid(row=4, column=0, columnspan=2, padx=10, pady=(15,10))
     w_sub.config(width=50)
 
@@ -252,6 +253,14 @@ def withdrawal_win():
 
 def Withdrawal(amount, wd_pin):
     account = query(acct_num)
+
+    assert amount != '', messagebox.showerror('error', 'Bruhh 💀, how much you wanna draw??!')
+    assert wd_pin != '', messagebox.showerror('error', 'Are you dumb fam, you need to type in your 4 digit pin')
+    assert amount.isdigit(), messagebox.showerror('error', 'Bruhh, You can\'t withdraw numbers 💀')
+    assert wd_pin.isdigit(), messagebox.showerror('error', 'Are you dumb fam, you need to type in your 4 digit pin')
+
+    amount, wd_pin = int(amount), int(wd_pin)
+
     if wd_pin in account[0]:
         if amount > account[0][-2]:
             withdrawalwin.destroy()
