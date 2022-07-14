@@ -5,8 +5,8 @@ import customtkinter as ctk
 from tkinter import messagebox
 from atm_utils import *
 
-ctk.set_appearance_mode('light')
-ctk.set_default_color_theme('green')
+ctk.set_appearance_mode('dark')
+ctk.set_default_color_theme('dark-blue')
 
 TRIES = 0
 global root
@@ -74,7 +74,7 @@ def create_acct_win():
     acct_create = CTkButton(fr, text='Create Now', command=lambda: create_acct(name.get(), pin.get(), balance.get()))
     acct_create.grid(row=4, column=1, padx=10, pady=(15,10), ipadx=30)
 
-    CTkButton(createwin, text='Quit', command=lambda: createwin.destroy()).grid(row=6, column=0, padx=50, pady=15)
+    CTkButton(createwin, text='Quit', command=lambda: [createwin.destroy(), start_win()]).grid(row=6, column=0, padx=50, pady=15)
 
     root2.destroy()
 
@@ -265,13 +265,13 @@ def withdrawal_win():
     amount_lb = CTkLabel(fr, text='Withdrawal Amount: ')
     amount_lb.grid(row=3, column=0)
 
-    w_amount = CTkEntry(fr, width= 150)
+    w_amount = CTkEntry(fr, width= 150, corner_radius=8, border_width=1)
     w_amount.grid(row=3, column=1, padx=20, pady=(10, 0))
 
     pin_lb = CTkLabel(fr, text='Enter Pin: ')
     pin_lb.grid(row=4, column=0)
 
-    w_pin = CTkEntry(fr, width= 150)
+    w_pin = CTkEntry(fr, width= 150, corner_radius=8, border_width=1)
     w_pin.grid(row=4, column=1, padx=20, pady=(10, 0))
 
     w_sub = CTkButton(fr, text='Withdraw', command=lambda: Withdrawal(w_amount.get(), w_pin.get()))
@@ -341,13 +341,13 @@ def deposit_win():
     amount_lb = CTkLabel(fr, text='Deposit Amount: ')
     amount_lb.grid(row=2, column=0)
 
-    d_amount = CTkEntry(fr, width= 150)
+    d_amount = CTkEntry(fr, width= 150, corner_radius=8, border_width=1,)
     d_amount.grid(row=2, column=1, padx=20, pady=(10, 0))
 
     pin_lb = CTkLabel(fr, text='Enter Pin: ')
     pin_lb.grid(row=3, column=0)
 
-    d_pin = CTkEntry(fr, width= 150)
+    d_pin = CTkEntry(fr, width= 150, corner_radius=8, border_width=1,)
     d_pin.grid(row=3, column=1, padx=20, pady=(10, 0))
 
     d_sub = CTkButton(fr, text='Deposit', command=lambda: Deposit(d_amount.get(), d_pin.get()))
@@ -391,6 +391,7 @@ def Deposit(amount, dp_pin):
         messagebox.showerror('error', f'Pin Incorrect')
 
 def transfer_win():
+    bank_list = ['KNAB EHT','UBA', 'Access Bank', 'First Bank', 'GT Bank']
     global transferwin
     transferwin = CTk()
     transferwin.geometry('400x500')
@@ -411,81 +412,101 @@ def transfer_win():
     bene_acct_lb = CTkLabel(fr, text='Beneficiary Account: ')
     bene_acct_lb.grid(row=3, column=0)
 
-    bene_acct = CTkEntry(fr, width=150)
+    bene_acct = CTkEntry(fr, width=150, corner_radius=8, border_width=1,)
     bene_acct.grid(row=3, column=1)
 
     amount_lb = CTkLabel(fr, text='Amount: ')
     amount_lb.grid(row=4, column=0)
 
-    t_amount = CTkEntry(fr, width= 150)
+    t_amount = CTkEntry(fr, width= 150, corner_radius=8, border_width=1,)
     t_amount.grid(row=4, column=1, padx=20, pady=(10, 0))
 
     pin_lb = CTkLabel(fr, text='Enter Pin: ')
     pin_lb.grid(row=5, column=0)
 
-    t_pin = CTkEntry(fr, width= 150)
+    t_pin = CTkEntry(fr, width=150, corner_radius=8, border_width=1,)
     t_pin.grid(row=5, column=1, padx=20, pady=(10, 0))
 
-    t_sub = CTkButton(fr, text='Transfer', command=lambda: t_confirm_win(bene_acct.get(), t_amount.get(), t_pin.get()))
-    t_sub.grid(row=6, column=0, columnspan=2, padx=10, pady=(15,10))
-    t_sub.config(width=50)
+    pin_lb = CTkLabel(fr, text='Choose Bank: ')
+    pin_lb.grid(row=6, column=0)
 
-    CTkButton(transferwin, text='Quit', command=lambda: transferwin.destroy()).grid(row=6, column=0, columnspan=2, padx=60, pady=(15, 0))
+    bank_choice = CTkComboBox(master=fr, width=150, corner_radius=8, border_width=1, values=bank_list)
+    bank_choice.grid(row=6, column=1, padx=20, pady=(10, 0))
+
+    t_sub = CTkButton(fr, text='Transfer', command=lambda: t_confirm_win(bene_acct.get(), t_amount.get(), bank_choice.get(), t_pin.get()))
+    t_sub.grid(row=7, column=0, columnspan=2, padx=10, pady=(15,10))
+
+    CTkButton(transferwin, text='Quit', command=lambda: transferwin.destroy()).grid(row=8, column=0, columnspan=2, padx=60, pady=(15, 0))
 
     transferwin.mainloop()
 
-def t_confirm_win(account_number, amount, pin):
+
+
+def t_confirm_win(account_number, amount, bank_name, pin):
     assert account_number != '', messagebox.showerror('error', 'Are you planning on transferring to a ghost ?!')
     assert account_number.isdigit(), messagebox.showerror('error', 'Imbecile, is called an account NUMBER for a reason!!')
     assert amount != '', messagebox.showerror('error', 'Bruhh 💀, how much you wanna Transfer??!')
     assert amount.isdigit(), messagebox.showerror('error', 'Idiot, You can\'t transfer letters 💀')
     assert pin != '', messagebox.showerror('error', 'Are you dumb fam, you need to type in your 4 digit pin')
     assert pin.isdigit(), messagebox.showerror('error', 'Are you dumb fam, you need to type in your 4 digit pin')
-
-    bene_acct = query(account_number)
-    if bene_acct != []:
-        global confirmwin
-        confirmwin = Tk()
-        confirmwin.geometry('250x250')
-        confirmwin.title('KNAB EHT')
-
+    
+    if bank_name == 'KNAB EHT':
+        bene_acct = query(account_number)
+        assert bene_acct != [], messagebox.showerror('error', 'This account does not exist in our bank 🤔')
         bene_name = bene_acct[0][0]
-
-        fr = LabelFrame(confirmwin, text='Confirm Transfer')
-        fr.grid(row=0, column=0, pady=10, padx=10, columnspan=3)
-
-        bene_acct_lb = Label(fr, text='Beneficiary Account: ')
-        bene_acct_lb.grid(row=1, column=0)
-
-        bene_acct = Label(fr, text=account_number)
-        bene_acct.grid(row=1, column=1)
-
-        amount_lb = Label(fr, text='Amount: ')
-        amount_lb.grid(row=2, column=0)
-
-        t_amount = Label(fr, text=amount)
-        t_amount.grid(row=2, column=1, padx=20, pady=(10, 0))
-
-        pin_lb = Label(fr, text='Beneficiary Name: ')
-        pin_lb.grid(row=3, column=0)
-
-        t_pin = Label(fr, text=bene_name)
-        t_pin.grid(row=3, column=1, padx=20, pady=(10, 0))
-
-        t_sub = Button(confirmwin, text='Transfer', command=lambda: Transfer(account_number, amount, pin))
-        t_sub.grid(row=4, column=2, padx=10, pady=(15,0))
-
-        Button(confirmwin, text='Cancel', command=lambda: confirmwin.destroy()).grid(row=4, column=0, pady=(15, 0))
     else:
-        messagebox.showerror('error', 'This account does not exist in our bank 🤔')
+        bene_acct = ['Another Bank']
+        bene_name = '-- UNAVAILABLE --'
+        messagebox.showwarning('warning', f'Transfering to foreign bank ({bank_name})')
 
-def Transfer(account_number, amount, t_pin):    
+    global confirmwin
+    confirmwin = CTk()
+    confirmwin.geometry('400x400')
+    confirmwin.title('KNAB EHT')
+
+    f_name_lb = CTkLabel(confirmwin, text='Confirm Transfer')
+    f_name_lb.grid(row=0, column=0, padx=30, pady=10, columnspan=2)
+
+    fr = CTkFrame(confirmwin)
+    fr.grid(row=1, column=0, pady=10, padx=40, columnspan=2)
+
+    bene_acct_lb = CTkLabel(fr, text='Beneficiary Account: ')
+    bene_acct_lb.grid(row=2, column=0)
+
+    bene_acct = CTkLabel(fr, text=account_number)
+    bene_acct.grid(row=2, column=1)
+
+    amount_lb = CTkLabel(fr, text='Amount: ')
+    amount_lb.grid(row=3, column=0)
+
+    t_amount = CTkLabel(fr, text=amount)
+    t_amount.grid(row=3, column=1, padx=20, pady=(10, 0))
+
+    pin_lb = CTkLabel(fr, text='Beneficiary Name: ')
+    pin_lb.grid(row=4, column=0)
+
+    t_pin = CTkLabel(fr, text=bene_name)
+    t_pin.grid(row=4, column=1, padx=20, pady=(10, 0))
+
+    bank_lb = CTkLabel(fr, text='Bank Name: ')
+    bank_lb.grid(row=5, column=0)
+
+    bank_name_lb = CTkLabel(fr, text=bank_name)
+    bank_name_lb.grid(row=5, column=1, padx=20, pady=(10, 0))
+
+    t_sub = CTkButton(confirmwin, text='Transfer', command=lambda:[Transfer(account_number, amount, pin, bank_name), confirmwin.destroy()])
+    t_sub.grid(row=6, column=1, pady=(15,0))
+
+    CTkButton(confirmwin, text='Cancel', command=lambda: confirmwin.destroy()).grid(row=6, column=0, pady=(15, 0))
+
+    confirmwin.mainloop()
+
+def Transfer(account_number, amount, t_pin, bank_name): 
     conn = sqlite3.connect('Bank_Accounts.db')
     c = conn.cursor()
 
     account = query(acct_num)
-    bene_account = query(account_number)
-
+        
     if int(t_pin) == account[0][1]:
         if float(amount) > account[0][2]:
             messagebox.showerror('error', f'Insufficient Balance')
@@ -501,27 +522,28 @@ def Transfer(account_number, amount, t_pin):
                             'Balance': account[0][2] - float(amount),
                             'oid': account[0][-1]
                     })
-
-            c.execute('''
-                        UPDATE Accounts SET
-                        Balance = :Balance
-                        WHERE oid = :oid
-                    ''',
-                    {
-                            'Balance': bene_account[0][2] + float(amount),
-                            'oid': account_number
-                    })
-
+            
+            if bank_name == 'KNAB EHT':
+                bene_account = query(account_number)
+                c.execute('''
+                            UPDATE Accounts SET
+                            Balance = :Balance
+                            WHERE oid = :oid
+                        ''',
+                        {
+                                'Balance': bene_account[0][2] + float(amount),
+                                'oid': account_number
+                        })
             messagebox.showinfo('information', f'Transaction Successful')
     else:
         messagebox.showerror('error', f'Pin Incorrect')
-    
+        
     transferwin.destroy()
     #commit changes
     conn.commit()
     #close connection
     conn.close()
 
-#print(query_all())
+print(query_all())
 root.mainloop()
 
