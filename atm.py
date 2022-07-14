@@ -13,10 +13,12 @@ global root
 root = ctk.CTk()
 root.title('Root Win')
 root.geometry('400x400')
-ctk.CTkButton(root, text='Quit', command=lambda: root.destroy()).grid(row=0, column=0)
-ctk.CTkButton(root, text='Start', command=lambda: start_win()).grid(row=0, column=1)
+f_name_lb = CTkLabel(root, text='PYTHON ATM SIMULATOR')
+f_name_lb.grid(row=0, column=0, columnspan=2, padx=90, pady=15)
+ctk.CTkButton(root, text='Quit', command=lambda: root.destroy()).grid(row=1, column=0)
+ctk.CTkButton(root, text='Start', command=lambda: [root.destroy(), start_win()]).grid(row=1, column=1)
 
-def start_win():
+def start_win():    
     global root2
     root2 = CTk()
     root2.title('KNAB EHT')
@@ -81,7 +83,6 @@ def create_acct_win():
     createwin.mainloop()
 
 def create_acct(name, pin, balance):
-    
     if(name == '' or pin == ''):
         messagebox.showerror('error', 'Idiot we need a name and a pin for this to work 😭')
     else:
@@ -439,8 +440,6 @@ def transfer_win():
     CTkButton(transferwin, text='Quit', command=lambda: transferwin.destroy()).grid(row=8, column=0, columnspan=2, padx=60, pady=(15, 0))
 
     transferwin.mainloop()
-
-
 
 def t_confirm_win(account_number, amount, bank_name, pin):
     assert account_number != '', messagebox.showerror('error', 'Are you planning on transferring to a ghost ?!')
