@@ -1,6 +1,9 @@
 import sqlite3
 
 def query_all():
+    """
+        return all accounts in the bank's database
+    """
     conn = sqlite3.connect('Bank_Accounts.db')
     #create cursor
     c = conn.cursor()
@@ -15,6 +18,10 @@ def query_all():
     return records
 
 def query(oid):
+    """
+        returns account details of the account whose account number\n
+        has been passed as an arg.
+    """
     conn = sqlite3.connect('Bank_Accounts.db')
     #create cursor
     c = conn.cursor()
@@ -29,6 +36,10 @@ def query(oid):
     return records
 
 def delete(oid):
+    """
+        delete account whose account number corresponds\n
+        with the one passed as an arg
+    """
     #create db or conect to one
     conn = sqlite3.connect('Bank_Accounts.db')
     #create cursor

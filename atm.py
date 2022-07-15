@@ -1,3 +1,4 @@
+#importing libraries
 from tkinter import *
 import tkinter as tk
 from customtkinter import *
@@ -5,10 +6,14 @@ import customtkinter as ctk
 from tkinter import messagebox
 from atm_utils import *
 
+#setting default theme for gui
 ctk.set_appearance_mode('dark')
 ctk.set_default_color_theme('dark-blue')
 
+#global variable for pin trial
 TRIES = 0
+
+#root window init
 global root
 root = ctk.CTk()
 root.title('Root Win')
@@ -18,7 +23,11 @@ f_name_lb.grid(row=0, column=0, columnspan=2, padx=90, pady=15)
 ctk.CTkButton(root, text='Quit', command=lambda: root.destroy()).grid(row=1, column=0)
 ctk.CTkButton(root, text='Start', command=lambda: [root.destroy(), start_win()]).grid(row=1, column=1)
 
-def start_win():    
+#Start page gui
+def start_win():  
+    """
+        gui design for start window
+    """  
     global root2
     root2 = CTk()
     root2.title('KNAB EHT')
@@ -39,11 +48,15 @@ def start_win():
     login_btn = CTkButton(lb, text="Input Card (Acct No.)", command=login_win)
     login_btn.grid(row=4, column=0, columnspan=3, padx=(50, 50), pady=(5, 50))
     
-    CTkButton(root2, text='Quit', command=lambda: root2.destroy()).grid(row=5, column=1, padx=90, pady=(15, 10))
+    CTkButton(root2, text='Quit', command=lambda: [root2.destroy(), messagebox.showinfo('information', f'Thank You for Banking with us 😄👋🏿')]).grid(row=5, column=1, padx=90, pady=(15, 10))
 
     root2.mainloop()
 
+
 def create_acct_win():
+    """
+        gui design for account creation window
+    """
     global createwin
     createwin = CTk()
     createwin.title('KNAB EHT')
@@ -82,13 +95,17 @@ def create_acct_win():
 
     createwin.mainloop()
 
-def create_acct(name, pin, balance):
+def create_acct(name, pin, balance=0):
+    """
+        collects user's name, pin and initial deposit\n
+        stores this information in the database\n
+        and generates an account number for the new user
+    """
     if(name == '' or pin == ''):
         messagebox.showerror('error', 'Idiot we need a name and a pin for this to work 😭')
     else:
         assert pin.isdigit() and len(pin) == 4, messagebox.showerror('error', 'You need a four digit pin please 😅')
         if balance == '':
-            balance = 0
             messagebox.showinfo('information', 'It seems you\'re suffering from Sapa')
         conn = sqlite3.connect('Bank_Accounts.db')
         c = conn.cursor()
@@ -111,6 +128,9 @@ def create_acct(name, pin, balance):
         start_win()
 
 def login_win():
+    """
+        gui design for login window
+    """
     global loginwin
     
     loginwin = CTk()
@@ -138,6 +158,12 @@ def login_win():
     loginwin.mainloop()
 
 def login(acct_number, pin):
+    """
+        Login account functionality\n
+        collects the user's account number and pin\n
+        queries database to return account details and grant access\n
+        user get only 3 attempts at loggin in
+    """
     global TRIES 
     global acct_num
 
@@ -176,6 +202,9 @@ def login(acct_number, pin):
         login_win()
 
 def main_win():
+    """
+        gui design from main window
+    """
     global mainwin
     account = query(acct_num)
     name = account[0][0]
@@ -201,7 +230,7 @@ def main_win():
     transfer = CTkButton(fr, text='Transfer', command=transfer_win)
     transfer.grid(row=5, column=0, padx=10, pady=(15,10))
 
-    CTkButton(mainwin, text='Quit', command=lambda: mainwin.destroy()).grid(row=6, column=0, pady=(15, 10))
+    CTkButton(mainwin, text='Quit', command=lambda: [mainwin.destroy(), messagebox.showinfo('information', f'Thank You for Banking with us 😄👋🏿')]).grid(row=6, column=0, pady=(15, 10))
 
     loginwin.destroy()
     root2.destroy()
@@ -209,6 +238,10 @@ def main_win():
     mainwin.mainloop()
 
 def check_balance():
+    """
+        window displays basic account details\n
+        i.e account balance, account name, and account number
+    """
     global balwin
     balwin = CTk()
     balwin.title('KNAB EHT')
@@ -246,6 +279,9 @@ def check_balance():
     balwin.mainloop()
 
 def withdrawal_win():
+    """
+        gui design for withdrawal window
+    """
     global withdrawalwin
     withdrawalwin = CTk()
     withdrawalwin.geometry('400x400')
@@ -283,6 +319,11 @@ def withdrawal_win():
     withdrawalwin.mainloop()
 
 def Withdrawal(amount, wd_pin):
+    """
+        collects the amount (in naira) the user wants to withdraw\n
+        and user's pin, returns a massage box showing the transaction status\n
+        (successful or unsuccessful -- as the case maybe)
+    """
     account = query(acct_num)
 
     assert amount != '', messagebox.showerror('error', 'Bruhh 💀, how much you wanna draw??!')
@@ -321,6 +362,9 @@ def Withdrawal(amount, wd_pin):
         messagebox.showerror('error', f'Pin Incorrect')
 
 def deposit_win():
+    """
+        gui display for deposit window
+    """
     global depositwin
 
     depositwin = CTk()
@@ -359,6 +403,11 @@ def deposit_win():
     depositwin.mainloop()
 
 def Deposit(amount, dp_pin):
+    """
+        collects the amount (in naira) the user wants to deposit\n
+        and user's pin, returns a massage box showing the transaction status\n
+        (successful or unsuccessful -- as the case maybe)
+    """
     account = query(acct_num)
 
     assert amount != '', messagebox.showerror('error', 'Bruhh 💀, how much you wanna deposit??!')
@@ -392,6 +441,9 @@ def Deposit(amount, dp_pin):
         messagebox.showerror('error', f'Pin Incorrect')
 
 def transfer_win():
+    """
+        gui design for transfer window
+    """
     bank_list = ['KNAB EHT','UBA', 'Access Bank', 'First Bank', 'GT Bank']
     global transferwin
     transferwin = CTk()
@@ -442,6 +494,9 @@ def transfer_win():
     transferwin.mainloop()
 
 def t_confirm_win(account_number, amount, bank_name, pin):
+    """
+       confirmation window for bank transfer
+    """
     assert account_number != '', messagebox.showerror('error', 'Are you planning on transferring to a ghost ?!')
     assert account_number.isdigit(), messagebox.showerror('error', 'Imbecile, is called an account NUMBER for a reason!!')
     assert amount != '', messagebox.showerror('error', 'Bruhh 💀, how much you wanna Transfer??!')
@@ -501,6 +556,12 @@ def t_confirm_win(account_number, amount, bank_name, pin):
     confirmwin.mainloop()
 
 def Transfer(account_number, amount, t_pin, bank_name): 
+    """
+        collects the amount (in naira) the user wants to transfer,\n
+        user's pin, beneficiary's account number and bank's name\n
+        and returns a massage box showing the transaction status\n
+        (successful or unsuccessful -- as the case maybe)       
+    """
     conn = sqlite3.connect('Bank_Accounts.db')
     c = conn.cursor()
 
