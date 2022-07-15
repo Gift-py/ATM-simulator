@@ -168,8 +168,8 @@ def login(acct_number, pin):
     global acct_num
 
     assert acct_number != '', messagebox.showerror('error', 'Bruhh!! Put in your account number')
-    assert pin != '', messagebox.showerror('error', 'My guy, what \'bout your pin?!')
     assert acct_number.isdigit(), messagebox.showerror('error', 'It\'s called account NUMBER for a reson idiot!')
+    assert pin != '', messagebox.showerror('error', 'My guy, what \'bout your pin?!')
     assert pin.isdigit(), messagebox.showerror('error', 'Are you dumb fam, you need to type in your 4 DIGIT pin')
 
     acct_num = acct_number
@@ -329,7 +329,7 @@ def Withdrawal(amount, wd_pin):
     assert amount != '', messagebox.showerror('error', 'Bruhh 💀, how much you wanna draw??!')
     assert amount.isdigit(), messagebox.showerror('error', 'Bruhh, You can\'t withdraw letters 💀')
     assert wd_pin != '', messagebox.showerror('error', 'Are you dumb fam, you need to type in your 4 digit pin')
-    assert wd_pin.isdigit(), messagebox.showerror('error', 'Are you dumb fam, you need to type in your 4 digit pin')
+    assert wd_pin.isdigit(), messagebox.showerror('error', 'Are you dumb fam, you need to type in your 4 DIGIT pin')
 
     amount, wd_pin = int(amount), int(wd_pin)
 
@@ -413,7 +413,7 @@ def Deposit(amount, dp_pin):
     assert amount != '', messagebox.showerror('error', 'Bruhh 💀, how much you wanna deposit??!')
     assert amount.isdigit(), messagebox.showerror('error', 'Bruhh, You can\'t deposit letters 💀')
     assert dp_pin != '', messagebox.showerror('error', 'Are you dumb fam, you need to type in your 4 digit pin')
-    assert dp_pin.isdigit(), messagebox.showerror('error', 'Are you dumb fam, you need to type in your 4 digit pin')
+    assert dp_pin.isdigit(), messagebox.showerror('error', 'Are you dumb fam, you need to type in your 4 DIGIT pin')
 
     amount, dp_pin = int(amount), int(dp_pin)
 
@@ -502,7 +502,7 @@ def t_confirm_win(account_number, amount, bank_name, pin):
     assert amount != '', messagebox.showerror('error', 'Bruhh 💀, how much you wanna Transfer??!')
     assert amount.isdigit(), messagebox.showerror('error', 'Idiot, You can\'t transfer letters 💀')
     assert pin != '', messagebox.showerror('error', 'Are you dumb fam, you need to type in your 4 digit pin')
-    assert pin.isdigit(), messagebox.showerror('error', 'Are you dumb fam, you need to type in your 4 digit pin')
+    assert pin.isdigit(), messagebox.showerror('error', 'Are you dumb fam, you need to type in your 4 DIGIT pin')
     
     if bank_name == 'KNAB EHT':
         bene_acct = query(account_number)
