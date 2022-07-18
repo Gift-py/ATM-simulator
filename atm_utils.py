@@ -53,6 +53,13 @@ def delete(oid):
     #close connection
     conn.close()
 
+def reset_tries(tries):
+    """
+        reset tries incase a new user want to log in
+    """
+    tries = 0
+    return tries
+
 # create db
 # conn = sqlite3.connect('Bank_Accounts.db')
 # create cursor

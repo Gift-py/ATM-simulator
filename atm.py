@@ -45,7 +45,7 @@ def start_win():
     create_acct_btn = CTkButton(lb, text="Create Account", command=create_acct_win)
     create_acct_btn.grid(row=3, column=0, columnspan=3, padx=(50, 50), pady=(15,5))
 
-    login_btn = CTkButton(lb, text="Input Card (Acct No.)", command=login_win)
+    login_btn = CTkButton(lb, text="Input Card (Acct No.)", command=lambda: [reset_tries(TRIES), login_win()])
     login_btn.grid(row=4, column=0, columnspan=3, padx=(50, 50), pady=(5, 50))
     
     CTkButton(root2, text='Quit', command=lambda: [root2.destroy(), messagebox.showinfo('information', f'Thank You for Banking with us 😄👋🏿')]).grid(row=5, column=1, padx=90, pady=(15, 10))
@@ -201,6 +201,7 @@ def login(acct_number, pin):
         loginwin.destroy()
         login_win()
 
+print("Before call", TRIES)
 def main_win():
     """
         gui design from main window
