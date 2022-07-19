@@ -7,7 +7,7 @@ from tkinter import messagebox
 from atm_utils import *
 
 #setting default theme for gui
-ctk.set_appearance_mode('dark')
+ctk.set_appearance_mode('light')
 ctk.set_default_color_theme('dark-blue')
 
 #global variable for pin trial
@@ -201,7 +201,6 @@ def login(acct_number, pin):
         loginwin.destroy()
         login_win()
 
-print("Before call", TRIES)
 def main_win():
     """
         gui design from main window
