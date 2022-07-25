@@ -102,11 +102,11 @@ def create_acct(name, pin, balance=0):
         and generates an account number for the new user
     """
     if(name == '' or pin == ''):
-        messagebox.showerror('error', 'Idiot we need a name and a pin for this to work 😭')
+        messagebox.showerror('error', 'You need a name and a pin number to create an account')
     else:
         assert pin.isdigit() and len(pin) == 4, messagebox.showerror('error', 'You need a four digit pin please 😅')
         if balance == '':
-            messagebox.showinfo('information', 'It seems you\'re suffering from Sapa')
+            messagebox.showinfo('information', 'Your Bank Balance is NGN 0.00')
         conn = sqlite3.connect('Bank_Accounts.db')
         c = conn.cursor()
         c.execute('INSERT INTO Accounts VALUES(:Name, :Pin, :Balance)',
@@ -167,10 +167,10 @@ def login(acct_number, pin):
     global TRIES 
     global acct_num
 
-    assert acct_number != '', messagebox.showerror('error', 'Bruhh!! Put in your account number')
-    assert acct_number.isdigit(), messagebox.showerror('error', 'It\'s called account NUMBER for a reson idiot!')
-    assert pin != '', messagebox.showerror('error', 'My guy, what \'bout your pin?!')
-    assert pin.isdigit(), messagebox.showerror('error', 'Are you dumb fam, you need to type in your 4 DIGIT pin')
+    assert acct_number != '', messagebox.showerror('error', 'Please, Input your account number')
+    assert acct_number.isdigit(), messagebox.showerror('error', 'Letters not Allowed')
+    assert pin != '', messagebox.showerror('error', 'Please, Input your pin')
+    assert pin.isdigit(), messagebox.showerror('error', 'Letters Forbidden, Input your pin')
 
     acct_num = acct_number
     conn = sqlite3.connect('Bank_Accounts.db')
@@ -180,7 +180,7 @@ def login(acct_number, pin):
     account = c.fetchall()
 
     if account == []:
-        messagebox.showerror('error', 'This Account... Does not exist... 😭')
+        messagebox.showerror('error', 'This Account... Does not exist...')
         messagebox.showinfo('information', 'If you do not have an account try creating one.. It is really easy')
         return
 
@@ -230,7 +230,8 @@ def main_win():
     transfer = CTkButton(fr, text='Transfer', command=transfer_win)
     transfer.grid(row=5, column=0, padx=10, pady=(15,10))
 
-    CTkButton(mainwin, text='Quit', command=lambda: [mainwin.destroy(), messagebox.showinfo('information', f'Thank You for Banking with us 😄👋🏿')]).grid(row=6, column=0, pady=(15, 10))
+    CTkButton(mainwin, text='Quit', command=lambda: [mainwin.destroy(), messagebox.showinfo
+    ('information', f'Thank You for Banking with us 😄👋🏿')]).grid(row=6, column=0, pady=(15, 10))
 
     loginwin.destroy()
     root2.destroy()
@@ -326,10 +327,10 @@ def Withdrawal(amount, wd_pin):
     """
     account = query(acct_num)
 
-    assert amount != '', messagebox.showerror('error', 'Bruhh 💀, how much you wanna draw??!')
-    assert amount.isdigit(), messagebox.showerror('error', 'Bruhh, You can\'t withdraw letters 💀')
-    assert wd_pin != '', messagebox.showerror('error', 'Are you dumb fam, you need to type in your 4 digit pin')
-    assert wd_pin.isdigit(), messagebox.showerror('error', 'Are you dumb fam, you need to type in your 4 DIGIT pin')
+    assert amount != '', messagebox.showerror('error', 'Please, Enter withdrawal amount')
+    assert amount.isdigit(), messagebox.showerror('error', 'Letters Forbidden')
+    assert wd_pin != '', messagebox.showerror('error', 'Piease, Input your pin')
+    assert wd_pin.isdigit(), messagebox.showerror('error', 'Letters Forbidden, Input your pin')
 
     amount, wd_pin = int(amount), int(wd_pin)
 
@@ -410,10 +411,10 @@ def Deposit(amount, dp_pin):
     """
     account = query(acct_num)
 
-    assert amount != '', messagebox.showerror('error', 'Bruhh 💀, how much you wanna deposit??!')
-    assert amount.isdigit(), messagebox.showerror('error', 'Bruhh, You can\'t deposit letters 💀')
-    assert dp_pin != '', messagebox.showerror('error', 'Are you dumb fam, you need to type in your 4 digit pin')
-    assert dp_pin.isdigit(), messagebox.showerror('error', 'Are you dumb fam, you need to type in your 4 DIGIT pin')
+    assert amount != '', messagebox.showerror('error', 'Please, Enter Deposit amount')
+    assert amount.isdigit(), messagebox.showerror('error', 'You can\'t deposit letters')
+    assert dp_pin != '', messagebox.showerror('error', 'Please, Input your pin')
+    assert dp_pin.isdigit(), messagebox.showerror('error', 'Your pin are not letters')
 
     amount, dp_pin = int(amount), int(dp_pin)
 
@@ -497,12 +498,12 @@ def t_confirm_win(account_number, amount, bank_name, pin):
     """
        confirmation window for bank transfer
     """
-    assert account_number != '', messagebox.showerror('error', 'Are you planning on transferring to a ghost ?!')
-    assert account_number.isdigit(), messagebox.showerror('error', 'Imbecile, is called an account NUMBER for a reason!!')
-    assert amount != '', messagebox.showerror('error', 'Bruhh 💀, how much you wanna Transfer??!')
-    assert amount.isdigit(), messagebox.showerror('error', 'Idiot, You can\'t transfer letters 💀')
-    assert pin != '', messagebox.showerror('error', 'Are you dumb fam, you need to type in your 4 digit pin')
-    assert pin.isdigit(), messagebox.showerror('error', 'Are you dumb fam, you need to type in your 4 DIGIT pin')
+    assert account_number != '', messagebox.showerror('error', 'Please Enter account number')
+    assert account_number.isdigit(), messagebox.showerror('error', 'Please enter a valid numeric account number')
+    assert amount != '', messagebox.showerror('error', 'Please, Enter amount to transfer')
+    assert amount.isdigit(), messagebox.showerror('error', 'You can\'t transfer letters 💀')
+    assert pin != '', messagebox.showerror('error', 'Please, you need to type in your 4 digit pin')
+    assert pin.isdigit(), messagebox.showerror('error', 'Your pin are not letters 😩')
     
     if bank_name == 'KNAB EHT':
         bene_acct = query(account_number)
